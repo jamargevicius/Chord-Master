@@ -1169,9 +1169,10 @@
             margin: 8px auto 12px auto;
         }
         .resonance-meter-label {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
-            font-family: 'EB Garamond', serif;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
         }
         .resonance-meter-fill {
             flex: 1;
@@ -1195,8 +1196,8 @@
         }
 
         /* Input level meter */
-        .level-meter { display: flex; align-items: center; gap: 10px; max-width: 360px; margin: 4px auto 16px auto; }
-        .level-meter-label { font-size: 12px; color: var(--text-secondary); font-family: 'EB Garamond', serif; }
+        .level-meter { display: flex; align-items: center; gap: 10px; max-width: 360px; margin: 6px auto 14px auto; }
+        .level-meter-label { font-size: 11px; color: var(--text-secondary); font-family: 'Inter', sans-serif; letter-spacing: 0.3px; }
         .level-meter-fill { flex: 1; height: 8px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; position: relative; }
         .level-meter-fill::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: var(--level, 0%); background: linear-gradient(90deg, #27ae60, #f39c12, #e74c3c); border-radius: inherit; box-shadow: 0 0 10px rgba(231, 76, 60, 0.3); transition: width 0.1s ease; }
 
@@ -1455,11 +1456,11 @@
         /* Frequency Visualizer Styles */
         .frequency-visualizer {
             background: var(--bg-card);
-            border-radius: 20px;
-            padding: 20px;
-            margin-top: 20px;
-            border: 2px solid var(--border);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
@@ -1468,8 +1469,8 @@
 
         .frequency-visualizer.active {
             display: block;
-            border-color: var(--accent);
-            box-shadow: 0 8px 32px rgba(192, 57, 43, 0.2);
+            border-color: rgba(46, 134, 222, 0.6);
+            box-shadow: 0 8px 28px rgba(46, 134, 222, 0.16);
         }
 
         .visualizer-header {
@@ -1480,8 +1481,10 @@
         }
 
         .visualizer-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.2px;
             color: var(--text-primary);
             display: flex;
             align-items: center;
@@ -1489,16 +1492,17 @@
         }
 
         .visualizer-info {
-            font-size: 14px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
             color: var(--text-secondary);
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .frequency-canvas {
             width: 100%;
-            height: 200px;
+            height: 220px;
             border-radius: 10px;
             background: linear-gradient(180deg, rgba(44, 62, 80, 0.03) 0%, rgba(44, 62, 80, 0.08) 100%);
             display: block;
@@ -2906,11 +2910,41 @@
             }
         }
 
+        // Format a human-readable chord label (e.g., "C Major", "A Minor 7")
+        function formatChordLabel(chord) {
+            if (!chord || !chord.key) return '';
+            const key = chord.key;
+            const rootMatch = key.match(/^([A-G]#?)/);
+            const root = rootMatch ? rootMatch[1] : key;
+            let quality = '';
+            switch (chord.category) {
+                case 'major': quality = 'Major'; break;
+                case 'minor': quality = 'Minor'; break;
+                case 'diminished': quality = 'Diminished'; break;
+                case 'augmented': quality = 'Augmented'; break;
+                case 'seventh': {
+                    const rest = key.slice(root.length);
+                    if (/^maj7$/i.test(rest)) quality = 'Major 7';
+                    else if (/^m7b5$/i.test(rest)) quality = 'Half-diminished 7';
+                    else if (/^m7$/i.test(rest)) quality = 'Minor 7';
+                    else if (/^7$/i.test(rest)) quality = 'Dominant 7';
+                    else quality = rest.toUpperCase();
+                    break;
+                }
+                default: quality = chord.type || ''; break;
+            }
+            return `${root} ${quality}`.trim();
+        }
+
         // Update Virtual Piano Chord Display
         function updateVirtualPianoChord() {
             if (currentChord) {
-                document.getElementById('virtual-chord-name').textContent = currentChord.key;
-                document.getElementById('virtual-chord-notes').textContent = currentChord.notation;
+                const nameEl = document.getElementById('virtual-chord-name');
+                const notesEl = document.getElementById('virtual-chord-notes');
+                const instrEl = document.getElementById('virtual-chord-instruction');
+                if (nameEl) nameEl.textContent = formatChordLabel(currentChord);
+                if (notesEl) notesEl.textContent = currentChord.notation;
+                if (instrEl) instrEl.textContent = `${formatChordLabel(currentChord)} — ${currentChord.inversion}`;
                 updateGestureZones();
                 highlightPianoKeys();
 
@@ -4297,8 +4331,8 @@
             document.getElementById('virtual-chord-display').classList.remove('correct', 'incorrect', 'timeout');
             document.getElementById('virtual-timer-text').textContent = '';
             document.getElementById('virtual-timer-progress').style.strokeDashoffset = 0;
-            document.getElementById('virtual-chord-name').textContent = 'C Major';
-            document.getElementById('virtual-chord-notes').textContent = 'C - E - G';
+            document.getElementById('virtual-chord-name').textContent = '';
+            document.getElementById('virtual-chord-notes').textContent = '';
             document.getElementById('virtual-chord-instruction').textContent = 'Press Start to Begin';
 
             isVirtualPracticing = false;
