@@ -49,7 +49,7 @@ Dev guidance
   - Open the `https://<your-user>.github.io/<repo>/` URL on your iPhone in Safari.
 - **Install:** Safari → Share → Add to Home Screen → Add.
 - **Permissions:** First launch requires a tap before audio starts (iOS policy). When you toggle the mic, iOS prompts for microphone access.
-- **Offline:** The inline Service Worker is minimal and network‑first. If you want true offline, upgrade it to cache the HTML, fonts, and KaTeX files (I can wire this up if you want).
+- **Offline:** Fully offline including first run. Fonts (Inter, EB Garamond) and KaTeX are bundled locally and precached by `sw.js`. No external network is required at any time.
 - **Icon (optional):** Add a `180x180` PNG and reference it with `<link rel="apple-touch-icon" href="/apple-touch-icon.png">` to improve the home‑screen icon.
 
 **Option B — Native iOS App (Capacitor + Xcode)**
@@ -70,7 +70,7 @@ Dev guidance
   - Select your iPhone as the run target and press Run in Xcode.
   - On first run, approve the developer certificate on the device if prompted.
   - Tap once in the app to unlock audio; toggle mic to grant permission.
-- **CDN assets note:** The file pulls Google Fonts and KaTeX from CDNs. For guaranteed offline behavior in the native app, download and serve these locally and update `<link>`/`<script>` tags.
+- **CDN assets note:** All former CDN assets have been replaced with local copies. No additional steps needed.
 - **Distribute (optional):**
   - TestFlight: Requires Apple Developer Program. In Xcode: Product → Archive → Distribute → App Store Connect. Invite testers in App Store Connect.
   - App Store: Apple may decline pure webview apps (Guideline 4.2). Adding native features and offline assets improves chances.
