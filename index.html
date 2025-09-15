@@ -1,0 +1,4540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Chord Master">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>Chord Master Professional - Piano Practice Platform</title>
+    
+    <!-- Google Fonts for Garamond -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX for Mathematical Formulas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQ2hvcmQgTWFzdGVyIFByb2Zlc3Npb25hbCIsInNob3J0X25hbWUiOiJDaG9yZE1hc3RlciIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwic3RhcnRfdXJsIjoiLiIsImJhY2tncm91bmRfY29sb3IiOiIjMWExYTJlIiwidGhlbWVfY29sb3IiOiIjMWExYTJlIiwib3JpZW50YXRpb24iOiJwb3J0cmFpdCJ9">
+    <!-- iOS Home Screen Icon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #c0392b;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --error: #e74c3c;
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --bg-main: #f8f9fa;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --border: rgba(52, 73, 94, 0.15);
+            --piano-white: #ffffff;
+            --piano-black: #2c3e50;
+            --ivory: #fffff0;
+            --ebony: #1a1a1a;
+            --safe-area-top: env(safe-area-inset-top);
+            --safe-area-bottom: env(safe-area-inset-bottom);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'EB Garamond', 'Garamond', serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-top: var(--safe-area-top);
+            padding-bottom: var(--safe-area-bottom);
+            overflow-x: hidden;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(90deg, 
+                    transparent, 
+                    transparent 80px, 
+                    rgba(0,0,0,0.03) 80px, 
+                    rgba(0,0,0,0.03) 81px),
+                repeating-linear-gradient(0deg, 
+                    transparent, 
+                    transparent 80px, 
+                    rgba(0,0,0,0.03) 80px, 
+                    rgba(0,0,0,0.03) 81px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        h1, h2, h3, .chord-name, .elegant-text {
+            font-family: 'EB Garamond', 'Garamond', serif;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Professional Header */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: clamp(28px, 7vw, 42px);
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: clamp(14px, 3.5vw, 18px);
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+        }
+
+        /* Navigation with Custom Icons */
+        .nav-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+            justify-items: stretch;
+            align-items: stretch;
+        }
+
+        .nav-button {
+            padding: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            color: var(--text-primary);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 56px;
+            font-family: 'EB Garamond', serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(192, 57, 43, 0.2);
+            border-color: var(--accent);
+        }
+
+        .nav-button:active {
+            transform: scale(0.98);
+        }
+
+        .nav-button.active {
+            background: linear-gradient(135deg, var(--accent), #a93226);
+            border-color: var(--accent);
+            box-shadow: 0 8px 25px rgba(192, 57, 43, 0.3);
+            color: white;
+        }
+
+        .nav-button svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Page Sections */
+        .page {
+            display: none;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        /* Main Chord Display */
+        .chord-display {
+            background: var(--bg-card);
+            border-radius: 25px;
+            padding: 35px;
+            text-align: center;
+            margin-bottom: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .chord-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent, rgba(192, 57, 43, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .chord-display.correct {
+            border-color: var(--success);
+            box-shadow: 0 0 30px rgba(39, 174, 96, 0.3);
+        }
+
+        .chord-display.correct::before {
+            background: linear-gradient(135deg, transparent, rgba(39, 174, 96, 0.1));
+            opacity: 1;
+        }
+
+        .chord-display.incorrect {
+            border-color: var(--error);
+            box-shadow: 0 0 30px rgba(231, 76, 60, 0.3);
+            animation: shake 0.5s ease;
+        }
+
+        .chord-display.incorrect::before {
+            background: linear-gradient(135deg, transparent, rgba(231, 76, 60, 0.1));
+            opacity: 1;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .chord-name {
+            font-size: clamp(52px, 13vw, 80px);
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+            color: var(--primary);
+        }
+
+        .chord-notation {
+            font-size: clamp(16px, 4vw, 22px);
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+        }
+
+        .chord-type {
+            font-size: clamp(20px, 5vw, 28px);
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .chord-timer {
+            font-size: clamp(16px, 3.5vw, 20px);
+            color: var(--warning);
+            font-weight: 600;
+            font-family: 'EB Garamond', serif;
+        }
+
+        /* Control Panel with SVG Icons */
+        .control-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .control-button {
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 75px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            font-family: 'EB Garamond', serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .control-button:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            box-shadow: 0 8px 20px rgba(192, 57, 43, 0.2);
+        }
+
+        .control-button:active {
+            transform: scale(0.98);
+        }
+
+        .control-button.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 8px 25px rgba(192, 57, 43, 0.3);
+            color: white;
+        }
+
+        .control-button svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .control-button .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* Compact Control Panel for Virtual Piano */
+        .virtual-control-panel {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .virtual-control-panel {
+                gap: 8px;
+                margin-bottom: 10px;
+            }
+        }
+
+        .virtual-control-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .virtual-control-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .virtual-control-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .virtual-control-button:hover .virtual-control-icon {
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(192, 57, 43, 0.2);
+        }
+
+        .virtual-control-button.active .virtual-control-icon {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .virtual-control-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        .virtual-control-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            font-family: 'EB Garamond', serif;
+            font-weight: 500;
+        }
+
+        /* Virtual Piano Container */
+        .virtual-piano-container {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 18px;
+            margin-top: 12px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .virtual-piano-container {
+                padding: 14px;
+                margin-top: 10px;
+                border-radius: 15px;
+            }
+        }
+
+        .virtual-piano-header {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .virtual-piano-header {
+                margin-bottom: 12px;
+            }
+
+            .virtual-piano-header h2 {
+                font-size: 1.3rem;
+                margin-bottom: 4px;
+            }
+
+            .virtual-piano-header p {
+                font-size: 0.85rem;
+                margin-bottom: 0;
+            }
+        }
+
+        .virtual-piano-header h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .virtual-piano-header p {
+            color: var(--text-secondary);
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+        }
+
+        /* Current Chord Display in Virtual Piano */
+        .virtual-chord-display {
+            background: rgba(128, 128, 128, 0.1);
+            border: 2px solid rgba(128, 128, 128, 0.3);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .virtual-chord-display {
+                padding: 10px;
+                margin-bottom: 8px;
+            }
+
+            #virtual-chord-name {
+                font-size: 1.6rem !important;
+                margin-bottom: 3px !important;
+            }
+
+            #virtual-chord-notes {
+                font-size: 0.95rem !important;
+                margin: 3px 0 !important;
+            }
+        }
+
+        .virtual-chord-display.correct {
+            background: rgba(39, 174, 96, 0.15);
+            border-color: var(--success);
+            animation: correctPulse 0.5s ease;
+        }
+
+        .virtual-chord-display.incorrect {
+            background: rgba(231, 76, 60, 0.15);
+            border-color: var(--error);
+            animation: incorrectShake 0.5s ease;
+        }
+
+        .virtual-chord-display.timeout {
+            background: rgba(243, 156, 18, 0.1);
+            border-color: var(--warning);
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .virtual-chord-name {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .virtual-chord-notes {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .virtual-chord-instruction {
+            font-size: 14px;
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        /* Piano Mode Selector */
+        .piano-mode-selector {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .mode-button {
+            padding: 14px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .mode-button:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .mode-button.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+            color: white;
+        }
+
+        /* Easy Touch Mode */
+        .gesture-piano {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .gesture-piano.active {
+            display: block;
+        }
+
+        .gesture-zones {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .gesture-zone {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: 25px 15px;
+            font-size: 24px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-family: 'EB Garamond', serif;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            color: var(--text-primary);
+        }
+
+        .gesture-zone.highlight {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(192, 57, 43, 0.1), rgba(192, 57, 43, 0.05));
+            box-shadow: 0 0 20px rgba(192, 57, 43, 0.3);
+            color: var(--accent);
+            font-weight: 800;
+        }
+
+        .gesture-zone.correct {
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.2), rgba(39, 174, 96, 0.1));
+            border-color: var(--success);
+            box-shadow: 0 0 20px rgba(39, 174, 96, 0.5);
+            color: var(--success);
+        }
+
+        .gesture-zone:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .gesture-zone:active {
+            transform: scale(0.95);
+            background: var(--accent);
+            color: white;
+        }
+
+        .gesture-zone.playing {
+            background: var(--success);
+            border-color: var(--success);
+            animation: gentle-press 0.3s ease;
+            color: white;
+        }
+
+        @keyframes gentle-press {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.98); }
+        }
+
+        /* Traditional Piano Keys */
+        .traditional-piano {
+            display: none;
+            padding: 20px 10px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .traditional-piano.active {
+            display: block;
+        }
+
+        .piano-instruction {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+        }
+
+        .piano-keys {
+            display: flex;
+            justify-content: center;
+            position: relative;
+            height: 180px;
+            margin: 0 auto;
+            width: fit-content;
+        }
+
+        .piano-key {
+            width: 50px;
+            height: 160px;
+            background: var(--piano-white);
+            border: 1px solid #ddd;
+            border-radius: 0 0 8px 8px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 12px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-family: 'EB Garamond', serif;
+        }
+
+        .piano-key.black {
+            width: 30px;
+            height: 100px;
+            background: var(--piano-black);
+            color: #888;
+            position: absolute;
+            z-index: 2;
+            font-size: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            margin-left: -15px;
+            margin-right: -15px;
+        }
+
+        .piano-key.highlight {
+            background: linear-gradient(to bottom, #ffebeb, #ffe0e0);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(192, 57, 43, 0.3);
+        }
+
+        .piano-key.black.highlight {
+            background: linear-gradient(to bottom, #4a2020, #3a1515);
+            box-shadow: 0 0 15px rgba(192, 57, 43, 0.5);
+        }
+
+        .piano-key.correct {
+            background: linear-gradient(to bottom, #d4f1d4, #a8e6a8) !important;
+            border-color: var(--success) !important;
+            box-shadow: 0 0 20px rgba(39, 174, 96, 0.5) !important;
+        }
+
+        .piano-key.black.correct {
+            background: linear-gradient(to bottom, #2d5a2d, #1e3e1e) !important;
+            box-shadow: 0 0 20px rgba(39, 174, 96, 0.7) !important;
+        }
+
+        .piano-key:active,
+        .piano-key.playing {
+            transform: translateY(4px);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+            background: linear-gradient(to bottom, #d0d0d0, #e0e0e0);
+        }
+
+        .piano-key.black:active,
+        .piano-key.black.playing {
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.4);
+            background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+
+        /* Timer Component */
+        .timer-metronome-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            margin: 12px auto;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            max-width: 360px;
+        }
+
+        /* Page layout polish */
+        .page {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        /* Chord Timer Section */
+        .chord-timer-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .chord-timer-display {
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+
+        .chord-timer-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .chord-timer-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 6;
+        }
+
+        .chord-timer-progress {
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 6;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+            filter: drop-shadow(0 0 8px rgba(255, 201, 60, 0.4));
+        }
+
+        .chord-timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'EB Garamond', serif;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .chord-timer-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Metronome removed */
+
+        @media (max-width: 768px) {
+            .timer-metronome-container {
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .chord-timer-display {
+                width: 100px;
+                height: 100px;
+            }
+
+            .chord-timer-text {
+                font-size: 28px;
+            }
+
+            .bpm-value {
+                font-size: 20px;
+            }
+        }
+
+        @keyframes pulse-beat {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0;
+            }
+            50% { 
+                transform: scale(3);
+                opacity: 0.5;
+            }
+        }
+
+        /* Stats Display */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(80px, 1fr));
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .stats-container.compact {
+            grid-template-columns: repeat(3, 1fr);
+            max-width: 360px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 999px;
+            padding: 10px 12px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 2px;
+            font-family: 'EB Garamond', serif;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'EB Garamond', serif;
+        }
+
+        /* Settings Page */
+        .settings-container {
+            background: var(--bg-card);
+            border-radius: 25px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+        }
+
+        .setting-group {
+            margin-bottom: 35px;
+        }
+
+        .setting-label {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 18px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .setting-label svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--accent);
+        }
+
+        .setting-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .setting-option {
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 500;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .setting-option:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .setting-option.selected {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+            color: white;
+        }
+
+        /* Sliders */
+        .slider-container {
+            margin: 20px 0;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-weight: 500;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 10px;
+            background: var(--border);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(233, 69, 96, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(233, 69, 96, 0.4);
+            border: none;
+        }
+
+        /* Physics Page */
+        .physics-content {
+            background: var(--bg-card);
+            border-radius: 25px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+        }
+
+        .physics-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .physics-card h3 {
+            margin-bottom: 18px;
+            color: var(--accent);
+            font-size: 24px;
+            font-family: 'EB Garamond', serif;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .physics-card p {
+            line-height: 1.7;
+            color: var(--text-secondary);
+            font-family: 'EB Garamond', serif;
+            margin: 15px 0;
+        }
+
+        .physics-formula {
+            background: rgba(233, 69, 96, 0.05);
+            border-left: 3px solid var(--accent);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-size: 18px;
+            text-align: center;
+            overflow-x: auto;
+        }
+
+        .frequency-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .frequency-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .frequency-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.2);
+        }
+
+        .frequency-note {
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 5px;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .frequency-hz {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-family: 'EB Garamond', serif;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--primary);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 500;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            font-family: 'EB Garamond', serif;
+            font-size: 14px;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--error);
+        }
+
+        .toast.warning {
+            background: var(--warning);
+        }
+
+        .toast.subtle {
+            background: rgba(44, 62, 80, 0.9);
+            font-size: 13px;
+            padding: 12px 24px;
+        }
+
+        /* Sheet Music Notation */
+        .sheet-music-container {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 8px 5px;
+            margin-bottom: 10px;
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            max-width: 360px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Resonance meter */
+        .resonance-meter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 360px;
+            margin: 8px auto 12px auto;
+        }
+        .resonance-meter-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-family: 'EB Garamond', serif;
+        }
+        .resonance-meter-fill {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+        .resonance-meter-fill::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--resonance-level, 0%);
+            background: linear-gradient(90deg, #7ed6df, #f6e58d, #ffbe76, #ff7979);
+            border-radius: inherit;
+            box-shadow: 0 0 12px rgba(255, 201, 60, 0.4);
+            transition: width 0.3s ease;
+        }
+
+        /* Input level meter */
+        .level-meter { display: flex; align-items: center; gap: 10px; max-width: 360px; margin: 4px auto 16px auto; }
+        .level-meter-label { font-size: 12px; color: var(--text-secondary); font-family: 'EB Garamond', serif; }
+        .level-meter-fill { flex: 1; height: 8px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; position: relative; }
+        .level-meter-fill::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: var(--level, 0%); background: linear-gradient(90deg, #27ae60, #f39c12, #e74c3c); border-radius: inherit; box-shadow: 0 0 10px rgba(231, 76, 60, 0.3); transition: width 0.1s ease; }
+
+        .sheet-music-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        @media (max-width: 768px) {
+            .sheet-music-container {
+                padding: 6px 3px;
+                margin-bottom: 8px;
+            }
+        }
+
+        .staff-line {
+            stroke: #5a6c7d;
+            stroke-width: 1.2;
+            opacity: 0.6;
+        }
+
+        .note-head {
+            fill: #2c3e50;
+            stroke: #1a252f;
+            stroke-width: 1.5;
+            transition: all 0.3s ease;
+            filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.15));
+        }
+
+        .note-head.highlight {
+            fill: var(--accent);
+            stroke: var(--accent);
+            filter: drop-shadow(0 0 8px rgba(255,201,60,0.5));
+        }
+
+        .note-head.correct {
+            fill: var(--success);
+            stroke: var(--success);
+            filter: drop-shadow(0 0 10px rgba(39, 174, 96, 0.6));
+        }
+
+        .note-stem {
+            stroke: #2c3e50;
+            stroke-width: 2.5;
+            transition: all 0.3s ease;
+            stroke-linecap: round;
+        }
+
+        .note-stem.highlight {
+            stroke: var(--accent);
+        }
+
+        .note-stem.correct {
+            stroke: var(--success);
+        }
+
+        .clef-symbol {
+            fill: #34495e;
+            opacity: 0.85;
+            filter: drop-shadow(1px 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .sharp-symbol, .flat-symbol {
+            fill: #34495e;
+            font-size: 24px;
+            font-family: 'Times New Roman', serif;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        /* Help Overlay */
+        .help-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .help-overlay.active {
+            display: block;
+        }
+
+        .help-content {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border-radius: 25px;
+            padding: 35px;
+            border: 1px solid var(--border);
+        }
+
+        .help-content h2 {
+            margin-bottom: 25px;
+            font-size: 32px;
+            color: var(--accent);
+        }
+
+        .help-close {
+            float: right;
+            font-size: 36px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .help-close:hover {
+            color: var(--accent);
+            transform: rotate(90deg);
+        }
+
+        .help-section {
+            margin: 25px 0;
+        }
+
+        .help-section h3 {
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-size: 20px;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .help-section p, .help-section li {
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin: 8px 0;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .help-section ul {
+            padding-left: 25px;
+        }
+
+        /* Loading Animation */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: var(--accent);
+            display: none;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .chord-name {
+                font-size: 48px;
+            }
+
+            .control-panel {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+
+            .gesture-zones {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .gesture-zone {
+                padding: 16px 8px;
+                font-size: 18px;
+                min-height: 60px;
+            }
+
+            .piano-key {
+                width: 46px;
+                height: 140px;
+            }
+
+            .piano-key.black {
+                width: 28px;
+                height: 95px;
+            }
+        }
+
+        @media (max-width: 390px) {
+            .chord-name {
+                font-size: 40px;
+            }
+
+            .nav-button {
+                min-width: 90px;
+                font-size: 12px;
+                padding: 14px;
+            }
+
+            .control-button {
+                min-height: 65px;
+                font-size: 13px;
+            }
+
+            .gesture-zones {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .gesture-zone {
+                padding: 14px 8px;
+                font-size: 16px;
+                min-height: 55px;
+            }
+
+            .piano-key {
+                width: 42px;
+                height: 130px;
+                font-size: 12px;
+            }
+
+            .piano-key.black {
+                width: 26px;
+                height: 85px;
+                font-size: 10px;
+            }
+        }
+
+        /* Focus Indicators */
+        button:focus,
+        .setting-option:focus,
+        .piano-key:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* Frequency Visualizer Styles */
+        .frequency-visualizer {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .frequency-visualizer.active {
+            display: block;
+            border-color: var(--accent);
+            box-shadow: 0 8px 32px rgba(192, 57, 43, 0.2);
+        }
+
+        .visualizer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .visualizer-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .visualizer-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .frequency-canvas {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, rgba(44, 62, 80, 0.03) 0%, rgba(44, 62, 80, 0.08) 100%);
+            display: block;
+        }
+
+        .note-markers {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(44, 62, 80, 0.05);
+            border-radius: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .note-marker {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px 10px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            min-width: 70px;
+        }
+
+        .note-marker.active {
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(39, 174, 96, 0.2));
+            border-color: var(--success);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        .note-marker.detected {
+            animation: pulseDetection 0.5s ease;
+        }
+
+        @keyframes pulseDetection {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .note-marker-note {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .note-marker-freq {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .physics-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+        }
+
+        .physics-indicator.resonance {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.1), rgba(243, 156, 18, 0.2));
+            color: var(--warning);
+        }
+
+        /* Audio Waveform Visualizer */
+        .waveform-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 320px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border: 2px solid var(--border);
+            z-index: 100;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(100px) scale(0.9);
+            pointer-events: none;
+        }
+
+        .waveform-container.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .waveform-container.active.recording {
+            border-color: var(--accent);
+            box-shadow: 0 8px 32px rgba(192, 57, 43, 0.25);
+        }
+
+        .waveform-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .waveform-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .waveform-status {
+            font-size: 11px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .waveform-status.active {
+            color: var(--success);
+        }
+
+        .waveform-status .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background: currentColor;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.5); }
+        }
+
+        .waveform-canvas {
+            width: 100%;
+            height: 60px;
+            border-radius: 8px;
+            background: linear-gradient(180deg, rgba(44, 62, 80, 0.02) 0%, rgba(44, 62, 80, 0.05) 100%);
+        }
+
+        .waveform-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        .waveform-info span {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        /* Responsive positioning for mobile */
+        @media (max-width: 768px) {
+            .waveform-container {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+                bottom: 80px;
+            }
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Chord Master Professional</h1>
+            <p class="subtitle">Advanced Piano Practice Platform</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-container">
+            <button class="nav-button active" onclick="switchPage('practice')">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 3h18v18H3V3zm2 2v14h14V5H5zm2 2h2v8H7V7zm4 0h2v8h-2V7zm4 0h2v8h-2V7z"/>
+                </svg>
+                <span>Practice</span>
+            </button>
+            <button class="nav-button" onclick="switchPage('virtual')">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                </svg>
+                <span>Virtual Piano</span>
+            </button>
+            <button class="nav-button" onclick="switchPage('settings')">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1z"/>
+                </svg>
+                <span>Settings</span>
+            </button>
+            <button class="nav-button" onclick="switchPage('physics')">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>Resonance</span>
+            </button>
+        </div>
+
+        <!-- Practice Page -->
+        <div id="practice-page" class="page active">
+            <!-- Stats Display -->
+            <div class="stats-container compact">
+                <div class="stat-card">
+                    <div class="stat-value" id="streak-count">0</div>
+                    <div class="stat-label">Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="accuracy">0%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="total-chords">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+
+            <!-- Practice Icon Control Panel (Moved to top, right after stats) -->
+            <div class="virtual-control-panel" style="margin-top: 20px; margin-bottom: 25px;">
+                <div class="virtual-control-button" onclick="togglePractice()" id="start-button">
+                    <div class="virtual-control-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    </div>
+                    <span class="virtual-control-label">Start</span>
+                </div>
+                <div class="virtual-control-button" onclick="restartSession()">
+                    <div class="virtual-control-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                        </svg>
+                    </div>
+                    <span class="virtual-control-label">Restart</span>
+                </div>
+                <div class="virtual-control-button" onclick="skipChord()">
+                    <div class="virtual-control-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+                        </svg>
+                    </div>
+                    <span class="virtual-control-label">Skip</span>
+                </div>
+                <div class="virtual-control-button" onclick="toggleMicrophone()" id="mic-button">
+                    <div class="virtual-control-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                            <line x1="12" y1="19" x2="12" y2="23"/>
+                            <line x1="8" y1="23" x2="16" y2="23"/>
+                        </svg>
+                    </div>
+                    <span class="virtual-control-label">Mic Off</span>
+                </div>
+                <div class="virtual-control-button" onclick="togglePracticeHints()" id="practice-hints-button">
+                    <div class="virtual-control-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </div>
+                    <span class="virtual-control-label">Hide Notes</span>
+                </div>
+                <div class="virtual-control-button" onclick="showHelp()">
+                    <div class="virtual-control-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M9 9a3 3 0 0 1 6 0c0 2-3 3-3 3"/>
+                            <circle cx="12" cy="17" r="1" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <span class="virtual-control-label">Help</span>
+                </div>
+            </div>
+
+            <!-- Chord Display -->
+            <div class="chord-display" id="chord-display">
+                <div class="chord-name" id="chord-name">Welcome</div>
+                <div class="chord-notation" id="chord-notation"></div>
+                <div class="chord-type" id="chord-type">Press Start to Begin</div>
+            </div>
+
+            <!-- Chord Timer Component -->
+            <div class="timer-metronome-container" id="practice-timer">
+                <!-- Chord Timer Section -->
+                <div class="chord-timer-section">
+                    <div class="chord-timer-label">Chord Timer</div>
+                    <div class="chord-timer-display">
+                        <svg class="chord-timer-svg" viewBox="0 0 120 120">
+                            <circle class="chord-timer-bg" cx="60" cy="60" r="54"></circle>
+                            <circle class="chord-timer-progress" id="timer-progress" cx="60" cy="60" r="54"></circle>
+                        </svg>
+                        <div class="chord-timer-text" id="timer-text">10</div>
+                    </div>
+                </div>
+
+                
+            </div>
+
+            <!-- Sheet Music Notation Display -->
+            <div class="sheet-music-container" id="practice-sheet-music" style="display: none;">
+                <svg id="practice-notation-svg" width="100%" height="64" viewBox="0 0 350 90">
+                    <!-- Staff and notes will be dynamically generated -->
+                </svg>
+            </div>
+
+            <!-- Resonance Meter (audio-reactive) -->
+            <div class="resonance-meter" id="resonance-meter" style="display:none;">
+                <div class="resonance-meter-fill" id="resonance-fill"></div>
+                <div class="resonance-meter-label">Resonance</div>
+            </div>
+
+            <!-- Input Level Meter (continuous) -->
+            <div class="level-meter" id="input-level-meter" style="display:none;">
+                <div class="level-meter-fill" id="input-level-fill"></div>
+                <div class="level-meter-label">Input Level</div>
+            </div>
+
+            <!-- Frequency Visualizer -->
+            <div class="frequency-visualizer" id="frequency-visualizer">
+                <div class="visualizer-header">
+                    <div class="visualizer-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                        </svg>
+                        Frequency Spectrum Analysis
+                    </div>
+                    <div class="visualizer-info">
+                        <span id="peak-frequency">Peak: 0 Hz</span>
+                        <span id="detected-note">Note: --</span>
+                    </div>
+                </div>
+                <div class="physics-indicator" id="physics-indicator" style="display: none;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 1v6m0 6v6m4.22-13.22l4.24 4.24M1.54 1.54l4.24 4.24M12 19l4.24 4.24M7.76 14.76l-4.24 4.24"/>
+                    </svg>
+                    <span id="resonance-text">Resonance Detected</span>
+                </div>
+                <canvas id="frequency-canvas" class="frequency-canvas"></canvas>
+                <div class="note-markers" id="note-markers">
+                    <!-- Will be populated dynamically based on current chord -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Virtual Piano Page -->
+        <div id="virtual-page" class="page">
+            <div class="virtual-piano-container">
+                <div class="virtual-piano-header">
+                    <h2>Virtual Piano Mode</h2>
+                    <p>Practice without a physical piano</p>
+                </div>
+
+                <!-- Virtual Stats (compact, independent UI) -->
+                <div class="stats-container compact">
+                    <div class="stat-card">
+                        <div class="stat-value" id="v-streak-count">0</div>
+                        <div class="stat-label">Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="v-accuracy">0%</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="v-total-chords">0</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                </div>
+
+                <!-- Virtual Piano Compact Control Panel (AT THE TOP) -->
+                <div class="virtual-control-panel">
+                    <div class="virtual-control-button" onclick="toggleVirtualPractice()" id="virtual-start-button">
+                        <div class="virtual-control-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </div>
+                        <span class="virtual-control-label">Start</span>
+                    </div>
+                    <div class="virtual-control-button" onclick="restartVirtualSession()">
+                        <div class="virtual-control-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                            </svg>
+                        </div>
+                        <span class="virtual-control-label">Restart</span>
+                    </div>
+                    <div class="virtual-control-button" onclick="skipVirtualChord()">
+                        <div class="virtual-control-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+                            </svg>
+                        </div>
+                        <span class="virtual-control-label">Skip</span>
+                    </div>
+                    <div class="virtual-control-button" onclick="toggleChordVisibility()" id="virtual-hints-button">
+                        <div class="virtual-control-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </div>
+                        <span class="virtual-control-label">Hide Hints</span>
+                    </div>
+                    <div class="virtual-control-button" onclick="showHelp()">
+                        <div class="virtual-control-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M9 9a3 3 0 0 1 6 0c0 2-3 3-3 3"/>
+                                <circle cx="12" cy="17" r="1" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <span class="virtual-control-label">Help</span>
+                    </div>
+                </div>
+
+                <!-- Chord Timer Component for Virtual Piano -->
+                <div class="timer-metronome-container" id="virtual-timer">
+                    <!-- Chord Timer Section -->
+                    <div class="chord-timer-section">
+                        <div class="chord-timer-label">Chord Timer</div>
+                        <div class="chord-timer-display">
+                            <svg class="chord-timer-svg" viewBox="0 0 120 120">
+                                <circle class="chord-timer-bg" cx="60" cy="60" r="54"></circle>
+                                <circle class="chord-timer-progress" id="virtual-timer-progress" cx="60" cy="60" r="54"></circle>
+                            </svg>
+                            <div class="chord-timer-text" id="virtual-timer-text">10</div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+
+                <!-- Current Chord Display -->
+                <div class="virtual-chord-display" id="virtual-chord-display">
+                    <div class="virtual-chord-name" id="virtual-chord-name">C Major</div>
+                    <div class="virtual-chord-notes" id="virtual-chord-notes">C - E - G</div>
+                    <div class="virtual-chord-instruction" id="virtual-chord-instruction">C Major - Root Position</div>
+                </div>
+
+                <!-- Sheet Music Notation Display -->
+                <div class="sheet-music-container" id="virtual-sheet-music" style="display: block;">
+                    <svg id="virtual-notation-svg" width="100%" height="64" viewBox="0 0 350 90">
+                        <!-- Staff and notes will be dynamically generated -->
+                    </svg>
+                </div>
+
+                <!-- Mode Selector -->
+                <div class="piano-mode-selector">
+                    <button class="mode-button active" onclick="switchPianoMode('gesture')">
+                        Easy Touch Mode
+                    </button>
+                    <button class="mode-button" onclick="switchPianoMode('traditional')">
+                        Piano Keys
+                    </button>
+                </div>
+
+                <!-- Easy Touch Mode -->
+                <div class="gesture-piano active" id="gesture-piano">
+                    <div class="gesture-zones" id="gesture-zones">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Traditional Piano Keys -->
+                <div class="traditional-piano" id="traditional-piano">
+                    <p class="piano-instruction">Tap the highlighted keys to play the chord</p>
+                    <div class="piano-keys" id="piano-keys">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settings-page" class="page">
+            <div class="settings-container">
+                <div class="setting-group">
+                    <div class="setting-label">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <span>Time per Chord</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Speed</span>
+                            <span id="speed-value">10s</span>
+                        </div>
+                        <input type="range" class="slider" id="speed-slider" min="1" max="20" value="10" step="1">
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-label">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M9 18V5l12-2v13"/>
+                            <circle cx="6" cy="18" r="3"/>
+                            <circle cx="18" cy="16" r="3"/>
+                        </svg>
+                        <span>Chord Types</span>
+                    </div>
+                    <div class="setting-options">
+                        <div class="setting-option selected" data-chord="major">
+                            Major Triads
+                        </div>
+                        <div class="setting-option" data-chord="minor">
+                            Minor Triads
+                        </div>
+                        <div class="setting-option" data-chord="diminished">
+                            Diminished
+                        </div>
+                        <div class="setting-option" data-chord="augmented">
+                            Augmented
+                        </div>
+                        <div class="setting-option" data-chord="seventh">
+                            7th Chords
+                        </div>
+                        <div class="setting-option" data-chord="inversions">
+                            Inversions
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-label">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                        </svg>
+                        <span>Sound Settings</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Volume</span>
+                            <span id="volume-value">70%</span>
+                        </div>
+                        <input type="range" class="slider" id="volume-slider" min="0" max="100" value="70" step="10">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Physics Page (Truncated for space, same content as before) -->
+        <div id="physics-page" class="page">
+            <div class="physics-content">
+                <div class="physics-card">
+                    <h3>The Mathematics of Musical Harmony</h3>
+                    <p>Musical harmony is fundamentally based on mathematical ratios. When frequencies form simple integer ratios, our brains perceive them as consonant and pleasing.</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            Perfect Fifth: \(\frac{f_2}{f_1} = \frac{3}{2}\) <br><br>
+                            Perfect Fourth: \(\frac{f_2}{f_1} = \frac{4}{3}\) <br><br>
+                            Major Third: \(\frac{f_2}{f_1} = \frac{5}{4}\)
+                        </div>
+                    </div>
+                    <p>These ratios were discovered by Pythagoras around 500 BCE and form the foundation of Western music theory.</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Fast Fourier Transform (FFT)</h3>
+                    <p>This application uses FFT to convert sound waves from the time domain to the frequency domain, allowing us to identify individual notes within a chord.</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(X(k) = \sum_{n=0}^{N-1} x(n) \cdot e^{-j2\pi kn/N}\)
+                        </div>
+                    </div>
+                    <p>Where X(k) represents the frequency component at frequency bin k, and x(n) is the time-domain signal.</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Piano String Vibration</h3>
+                    <p>The fundamental frequency of a vibrating string is determined by its physical properties:</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(f = \frac{1}{2L} \sqrt{\frac{T}{\mu}}\)
+                        </div>
+                    </div>
+                    <p>Where:<br>
+                    • f = fundamental frequency (Hz)<br>
+                    • L = string length (m)<br>
+                    • T = tension (N)<br>
+                    • μ = linear mass density (kg/m)</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Harmonic Series & Overtones</h3>
+                    <p>When a piano string vibrates, it produces not just the fundamental frequency but a series of overtones:</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(f_n = n \cdot f_1 \sqrt{1 + B n^2}\)
+                        </div>
+                    </div>
+                    <p>Where B is the inharmonicity coefficient, typically around 0.0004 for piano strings. This slight deviation from perfect harmonics gives the piano its characteristic "warmth."</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Wave Equation for Stiff Strings</h3>
+                    <p>Piano strings exhibit stiffness, leading to a modified wave equation:</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(\frac{\partial^2 y}{\partial t^2} = c^2 \frac{\partial^2 y}{\partial x^2} - \kappa^2 \frac{\partial^4 y}{\partial x^4}\)
+                        </div>
+                    </div>
+                    <p>Where κ represents the stiffness parameter, causing dispersion and inharmonicity in real piano strings.</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Helmholtz Resonance in the Piano Body</h3>
+                    <p>The soundboard and air cavity create Helmholtz resonance:</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(f_H = \frac{c}{2\pi} \sqrt{\frac{A}{V \cdot L_{eff}}}\)
+                        </div>
+                    </div>
+                    <p>Where c is speed of sound, A is the area of the sound hole, V is cavity volume, and L_eff is the effective length of the neck.</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Psychoacoustic Phenomenon: Critical Bands</h3>
+                    <p>The basilar membrane in our ear responds to frequencies in critical bands, described by the Bark scale:</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(z = 13 \arctan(0.00076f) + 3.5 \arctan\left(\left(\frac{f}{7500}\right)^2\right)\)
+                        </div>
+                    </div>
+                    <p>This explains why certain intervals sound dissonant when their frequencies fall within the same critical band.</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Combination Tones & Nonlinear Effects</h3>
+                    <p>When two notes are played loudly, our ear creates phantom tones:</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(f_{difference} = |f_1 - f_2|\) <br><br>
+                            \(f_{sum} = f_1 + f_2\) <br><br>
+                            \(f_{cubic} = 2f_1 - f_2\)
+                        </div>
+                    </div>
+                    <p>These combination tones, discovered by Tartini, arise from nonlinearities in the ear's response to sound.</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Equal Temperament vs. Just Intonation</h3>
+                    <p>Modern pianos use equal temperament, but this creates "beating" against pure ratios:</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(\text{ET Fifth: } 2^{7/12} \approx 1.4983\) <br><br>
+                            \(\text{Just Fifth: } \frac{3}{2} = 1.5\) <br><br>
+                            \(\text{Beat frequency: } f_1 \cdot |1.5 - 1.4983| \approx 0.0017 f_1\)
+                        </div>
+                    </div>
+                    <p>This 2-cent difference creates the characteristic "shimmer" in piano chords.</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Sympathetic Resonance & String Coupling</h3>
+                    <p>Undamped strings vibrate sympathetically, described by coupled oscillator equations:</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(\ddot{x}_1 + \omega_1^2 x_1 + \kappa(x_1 - x_2) = 0\) <br><br>
+                            \(\ddot{x}_2 + \omega_2^2 x_2 + \kappa(x_2 - x_1) = 0\)
+                        </div>
+                    </div>
+                    <p>Where κ is the coupling constant. This creates the rich, sustained sound when the damper pedal is pressed.</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Hammer-String Interaction Dynamics</h3>
+                    <p>The contact time between hammer and string follows Hertz's law:</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(F = K \delta^{3/2}\) <br><br>
+                            \(t_{contact} \approx 2.94 \left(\frac{m_{eff}}{K v_0^{1/2}}\right)^{2/5}\)
+                        </div>
+                    </div>
+                    <p>Where K is the hammer stiffness constant and v₀ is the hammer velocity. This nonlinear interaction shapes the timbre.</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Sound Radiation from the Soundboard</h3>
+                    <p>The soundboard acts as a baffled piston radiator at low frequencies:</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(P(r, \theta) = \frac{j \rho_0 c k a^2 U_0}{2r} e^{j(\omega t - kr)} \cdot \frac{2J_1(ka \sin\theta)}{ka \sin\theta}\)
+                        </div>
+                    </div>
+                    <p>Where J₁ is the Bessel function of the first kind, determining the radiation pattern.</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Chaos Theory in Piano Strings</h3>
+                    <p>At high amplitudes, piano strings exhibit chaotic behavior described by the Duffing equation:</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(\ddot{x} + \delta \dot{x} + \alpha x + \beta x^3 = \gamma \cos(\omega t)\)
+                        </div>
+                    </div>
+                    <p>The cubic term β introduces nonlinearity, leading to period-doubling bifurcations and eventual chaos in extreme playing conditions.</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Quantum Mechanics of Sound Perception</h3>
+                    <p>Recent research suggests quantum coherence in inner ear hair cells:</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(|\psi\rangle = \alpha|0\rangle + \beta|1\rangle\) <br><br>
+                            \(\tau_{coherence} \sim \frac{\hbar}{k_B T} \approx 10^{-13}\text{ s at body temperature}\)
+                        </div>
+                    </div>
+                    <p>While brief, quantum effects may enhance sensitivity to phase relationships in complex chords.</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Acoustic Impedance & Energy Transfer</h3>
+                    <p>The efficiency of energy transfer from string to soundboard depends on impedance matching:</p>
+                    <div class="physics-formula">
+                        <div class="katex-formula">
+                            \(Z_{string} = \sqrt{T \mu}\) <br><br>
+                            \(Z_{bridge} = \sqrt{E \rho} \cdot A\) <br><br>
+                            \(\text{Transfer coefficient: } \tau = \frac{4Z_1 Z_2}{(Z_1 + Z_2)^2}\)
+                        </div>
+                    </div>
+                    <p>Optimal transfer occurs when impedances are matched, explaining the critical role of bridge design.</p>
+                </div>
+
+                <div class="physics-card">
+                    <h3>Note Frequencies</h3>
+                    <div class="frequency-display">
+                        <div class="frequency-item">
+                            <div class="frequency-note">C₄</div>
+                            <div class="frequency-hz">261.63 Hz</div>
+                        </div>
+                        <div class="frequency-item">
+                            <div class="frequency-note">D₄</div>
+                            <div class="frequency-hz">293.66 Hz</div>
+                        </div>
+                        <div class="frequency-item">
+                            <div class="frequency-note">E₄</div>
+                            <div class="frequency-hz">329.63 Hz</div>
+                        </div>
+                        <div class="frequency-item">
+                            <div class="frequency-note">F₄</div>
+                            <div class="frequency-hz">349.23 Hz</div>
+                        </div>
+                        <div class="frequency-item">
+                            <div class="frequency-note">G₄</div>
+                            <div class="frequency-hz">392.00 Hz</div>
+                        </div>
+                        <div class="frequency-item">
+                            <div class="frequency-note">A₄</div>
+                            <div class="frequency-hz">440.00 Hz</div>
+                        </div>
+                        <div class="frequency-item">
+                            <div class="frequency-note">B₄</div>
+                            <div class="frequency-hz">493.88 Hz</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Overlay -->
+    <div class="help-overlay" id="help-overlay">
+        <div class="help-content">
+            <span class="help-close" onclick="closeHelp()">×</span>
+            <h2>How to Use Chord Master Professional</h2>
+            
+            <div class="help-section">
+                <h3>Practice Mode</h3>
+                <p>1. Press "Start" to begin your practice session</p>
+                <p>2. Play the displayed chord on your piano</p>
+                <p>3. The app will detect if you played it correctly</p>
+                <p>4. Green border = Correct, Red border = Try again</p>
+                <p>5. Track your progress with streaks and accuracy</p>
+                <p>6. Use "Restart" to begin a new session with fresh stats</p>
+            </div>
+
+            <div class="help-section">
+                <h3>Virtual Piano Mode</h3>
+                <p><strong>Easy Touch Mode:</strong> Large buttons showing only the notes you need for the current chord. Perfect for practice without a physical piano.</p>
+                <p><strong>Piano Keys Mode:</strong> Traditional piano layout with highlighted keys for the current chord. Scroll horizontally to access all keys.</p>
+            </div>
+
+            <div class="help-section">
+                <h3>Chord Notation</h3>
+                <ul>
+                    <li><strong>Root Position:</strong> Notes in their basic order (C-E-G)</li>
+                    <li><strong>1st Inversion:</strong> First note moved up an octave (E-G-C)</li>
+                    <li><strong>2nd Inversion:</strong> First two notes moved up (G-C-E)</li>
+                    <li><strong>7th Chords:</strong> Four-note chords with added seventh</li>
+                </ul>
+            </div>
+
+            <div class="help-section">
+                <h3>Settings</h3>
+                <p>Customize your practice experience:</p>
+                <ul>
+                    <li>Adjust time per chord (5-30 seconds)</li>
+                    <li>Select specific chord types to practice</li>
+                    <li>Choose your difficulty level</li>
+                    <li>Control volume and sound settings</li>
+                </ul>
+            </div>
+
+            <div class="help-section">
+                <h3>Physics Mode</h3>
+                <p>Explore the mathematical and physical principles behind music, including frequency ratios, harmonics, and the science of sound.</p>
+            </div>
+
+            <div class="help-section">
+                <h3>iPhone Installation</h3>
+                <p>1. Open this page in Safari (not Chrome)</p>
+                <p>2. Tap the Share button</p>
+                <p>3. Select "Add to Home Screen"</p>
+                <p>4. Name it and tap "Add"</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Loading Indicator -->
+    <div class="loading" id="loading">Loading</div>
+
+    <script>
+        // ========================================
+        // MAIN JAVASCRIPT SECTION
+        // ========================================
+
+        // Initialize KaTeX for math rendering
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ],
+                throwOnError: false
+            });
+        });
+
+        // ========================================
+        // EARLY FUNCTION DEFINITIONS
+        // Required for HTML onclick handlers
+        // ========================================
+        window.toggleVirtualPractice = function() {
+            // Defer if variables not yet initialized
+            if (typeof isVirtualPracticing === 'undefined') {
+                setTimeout(() => window.toggleVirtualPractice(), 100);
+                return;
+            }
+
+            const button = document.getElementById('virtual-start-button');
+            const icon = button ? button.querySelector('.virtual-control-icon svg') : null;
+            const label = button ? button.querySelector('.virtual-control-label') : null;
+
+            isVirtualPracticing = !isVirtualPracticing;
+
+            if (isVirtualPracticing) {
+                if (button) button.classList.add('active');
+                if (icon) {
+                    icon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+                }
+                if (label) label.textContent = 'Pause';
+                currentPage = 'virtual';
+                displayChord();
+            } else {
+                if (button) button.classList.remove('active');
+                if (icon) {
+                    icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                }
+                if (label) label.textContent = 'Start';
+                if (typeof chordTimer !== 'undefined') clearInterval(chordTimer);
+                const timerText = document.getElementById('virtual-timer-text');
+                const timerProgress = document.getElementById('virtual-timer-progress');
+                if (timerText) timerText.textContent = '';
+                if (timerProgress) timerProgress.style.strokeDashoffset = 0;
+            }
+        }
+
+        // ========================================
+        // GLOBAL VARIABLES
+        // ========================================
+
+        // DOM Element Cache (Performance Optimization)
+        const DOM = {
+            // Timer elements (frequently accessed)
+            practiceTimerText: null,
+            practiceTimerProgress: null,
+            virtualTimerText: null,
+            virtualTimerProgress: null,
+            // Buttons (frequently accessed)
+            startButton: null,
+            virtualStartButton: null,
+            // Display elements
+            chordDisplay: null,
+            virtualChordDisplay: null,
+            // Will be populated on DOM load
+            init() {
+                this.practiceTimerText = document.getElementById('timer-text');
+                this.practiceTimerProgress = document.getElementById('timer-progress');
+                this.virtualTimerText = document.getElementById('virtual-timer-text');
+                this.virtualTimerProgress = document.getElementById('virtual-timer-progress');
+                this.startButton = document.getElementById('start-button');
+                this.virtualStartButton = document.getElementById('virtual-start-button');
+                this.chordDisplay = document.getElementById('chord-display');
+                this.virtualChordDisplay = document.getElementById('virtual-chord-display');
+            }
+        };
+
+        // Audio & State Variables
+        let audioContext;
+        let analyser;
+        let microphone;
+        let micStream;
+        let isListening = false;
+        let isPracticing = false;
+        let isVirtualPracticing = false;
+        let currentChord = null;
+        let chordTimer = null;
+        let timeRemaining = 10;
+        let maxTime = 10;
+        let debugMode = true; // Enable debug mode for testing
+
+        // Metronome removed
+        let playedNotes = new Set();
+        let detectedNotes = new Set();
+        let processingCompletion = false;
+        let currentPage = 'practice';
+        let showChordHints = true;
+        let showPracticeHints = true;
+        let pitchDetectionInterval = null;
+        
+        // Session stats (separate for Practice and Virtual)
+        let sessionStatsPractice = { streak: 0, correct: 0, total: 0 };
+        let sessionStatsVirtual = { streak: 0, correct: 0, total: 0 };
+        const getCurrentStats = () => (currentPage === 'virtual' ? sessionStatsVirtual : sessionStatsPractice);
+        
+        // Lifetime stats (persistent)
+        let lifetimeStats = {
+            bestStreak: 0,
+            totalCorrect: 0,
+            totalPlayed: 0
+        };
+
+        // Update sheet music note color when played correctly
+        function updateSheetMusicNote(note, isCorrect) {
+            const svgId = currentPage === 'practice' ? 'practice-notation-svg' : 'virtual-notation-svg';
+            const noteHeads = document.querySelectorAll(`#${svgId} .note-head[data-note="${note}"]`);
+            const noteStems = document.querySelectorAll(`#${svgId} .note-stem[data-note="${note}"]`);
+
+            noteHeads.forEach(head => {
+                if (isCorrect) {
+                    head.classList.add('correct');
+                    setTimeout(() => {
+                        head.classList.remove('correct');
+                    }, 1000);
+                }
+            });
+
+            noteStems.forEach(stem => {
+                if (isCorrect) {
+                    stem.classList.add('correct');
+                    setTimeout(() => {
+                        stem.classList.remove('correct');
+                    }, 1000);
+                }
+            });
+        }
+
+        // ========================================
+        // MUSICAL DATA & CONSTANTS
+        // ========================================
+        const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        
+        // Complete chord definitions with all types
+        const chordDefinitions = {
+            major: {
+                'C': { notes: ['C', 'E', 'G'], intervals: [0, 4, 7] },
+                'C#': { notes: ['C#', 'F', 'G#'], intervals: [0, 4, 7] },
+                'D': { notes: ['D', 'F#', 'A'], intervals: [0, 4, 7] },
+                'D#': { notes: ['D#', 'G', 'A#'], intervals: [0, 4, 7] },
+                'E': { notes: ['E', 'G#', 'B'], intervals: [0, 4, 7] },
+                'F': { notes: ['F', 'A', 'C'], intervals: [0, 4, 7] },
+                'F#': { notes: ['F#', 'A#', 'C#'], intervals: [0, 4, 7] },
+                'G': { notes: ['G', 'B', 'D'], intervals: [0, 4, 7] },
+                'G#': { notes: ['G#', 'C', 'D#'], intervals: [0, 4, 7] },
+                'A': { notes: ['A', 'C#', 'E'], intervals: [0, 4, 7] },
+                'A#': { notes: ['A#', 'D', 'F'], intervals: [0, 4, 7] },
+                'B': { notes: ['B', 'D#', 'F#'], intervals: [0, 4, 7] }
+            },
+            minor: {
+                'C': { notes: ['C', 'D#', 'G'], intervals: [0, 3, 7] },
+                'C#': { notes: ['C#', 'E', 'G#'], intervals: [0, 3, 7] },
+                'D': { notes: ['D', 'F', 'A'], intervals: [0, 3, 7] },
+                'D#': { notes: ['D#', 'F#', 'A#'], intervals: [0, 3, 7] },
+                'E': { notes: ['E', 'G', 'B'], intervals: [0, 3, 7] },
+                'F': { notes: ['F', 'G#', 'C'], intervals: [0, 3, 7] },
+                'F#': { notes: ['F#', 'A', 'C#'], intervals: [0, 3, 7] },
+                'G': { notes: ['G', 'A#', 'D'], intervals: [0, 3, 7] },
+                'G#': { notes: ['G#', 'B', 'D#'], intervals: [0, 3, 7] },
+                'A': { notes: ['A', 'C', 'E'], intervals: [0, 3, 7] },
+                'A#': { notes: ['A#', 'C#', 'F'], intervals: [0, 3, 7] },
+                'B': { notes: ['B', 'D', 'F#'], intervals: [0, 3, 7] }
+            },
+            diminished: {
+                'C': { notes: ['C', 'D#', 'F#'], intervals: [0, 3, 6] },
+                'C#': { notes: ['C#', 'E', 'G'], intervals: [0, 3, 6] },
+                'D': { notes: ['D', 'F', 'G#'], intervals: [0, 3, 6] },
+                'D#': { notes: ['D#', 'F#', 'A'], intervals: [0, 3, 6] },
+                'E': { notes: ['E', 'G', 'A#'], intervals: [0, 3, 6] },
+                'F': { notes: ['F', 'G#', 'B'], intervals: [0, 3, 6] },
+                'F#': { notes: ['F#', 'A', 'C'], intervals: [0, 3, 6] },
+                'G': { notes: ['G', 'A#', 'C#'], intervals: [0, 3, 6] },
+                'G#': { notes: ['G#', 'B', 'D'], intervals: [0, 3, 6] },
+                'A': { notes: ['A', 'C', 'D#'], intervals: [0, 3, 6] },
+                'A#': { notes: ['A#', 'C#', 'E'], intervals: [0, 3, 6] },
+                'B': { notes: ['B', 'D', 'F'], intervals: [0, 3, 6] }
+            },
+            augmented: {
+                'C': { notes: ['C', 'E', 'G#'], intervals: [0, 4, 8] },
+                'C#': { notes: ['C#', 'F', 'A'], intervals: [0, 4, 8] },
+                'D': { notes: ['D', 'F#', 'A#'], intervals: [0, 4, 8] },
+                'D#': { notes: ['D#', 'G', 'B'], intervals: [0, 4, 8] },
+                'E': { notes: ['E', 'G#', 'C'], intervals: [0, 4, 8] },
+                'F': { notes: ['F', 'A', 'C#'], intervals: [0, 4, 8] },
+                'F#': { notes: ['F#', 'A#', 'D'], intervals: [0, 4, 8] },
+                'G': { notes: ['G', 'B', 'D#'], intervals: [0, 4, 8] },
+                'G#': { notes: ['G#', 'C', 'E'], intervals: [0, 4, 8] },
+                'A': { notes: ['A', 'C#', 'F'], intervals: [0, 4, 8] },
+                'A#': { notes: ['A#', 'D', 'F#'], intervals: [0, 4, 8] },
+                'B': { notes: ['B', 'D#', 'G'], intervals: [0, 4, 8] }
+            },
+            seventh: {
+                'Cmaj7': { notes: ['C', 'E', 'G', 'B'], intervals: [0, 4, 7, 11] },
+                'Dm7': { notes: ['D', 'F', 'A', 'C'], intervals: [0, 3, 7, 10] },
+                'Em7': { notes: ['E', 'G', 'B', 'D'], intervals: [0, 3, 7, 10] },
+                'Fmaj7': { notes: ['F', 'A', 'C', 'E'], intervals: [0, 4, 7, 11] },
+                'G7': { notes: ['G', 'B', 'D', 'F'], intervals: [0, 4, 7, 10] },
+                'Am7': { notes: ['A', 'C', 'E', 'G'], intervals: [0, 3, 7, 10] },
+                'Bm7b5': { notes: ['B', 'D', 'F', 'A'], intervals: [0, 3, 6, 10] }
+            }
+        };
+
+        const inversions = {
+            'Root': (notes) => notes,
+            '1st Inv': (notes) => [notes[1], notes[2], notes[0]],
+            '2nd Inv': (notes) => [notes[2], notes[0], notes[1]]
+        };
+
+        // Note Frequencies (A4 = 440Hz) - Extended range for better detection
+        const noteFrequencies = {
+            'C': [130.81, 261.63, 523.25, 1046.50, 2093.00],
+            'C#': [138.59, 277.18, 554.37, 1108.73, 2217.46],
+            'D': [146.83, 293.66, 587.33, 1174.66, 2349.32],
+            'D#': [155.56, 311.13, 622.25, 1244.51, 2489.02],
+            'E': [164.81, 329.63, 659.25, 1318.51, 2637.02],
+            'F': [174.61, 349.23, 698.46, 1396.91, 2793.83],
+            'F#': [185.00, 369.99, 739.99, 1479.98, 2959.96],
+            'G': [196.00, 392.00, 783.99, 1567.98, 3135.96],
+            'G#': [207.65, 415.30, 830.61, 1661.22, 3322.44],
+            'A': [220.00, 440.00, 880.00, 1760.00, 3520.00],
+            'A#': [233.08, 466.16, 932.33, 1864.66, 3729.31],
+            'B': [246.94, 493.88, 987.77, 1975.53, 3951.07]
+        };
+
+        // ========================================
+        // CORE AUDIO FUNCTIONS
+        // ========================================
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                window.gainNode = audioContext.createGain();
+                window.gainNode.connect(audioContext.destination);
+                window.gainNode.gain.value = 0.3;
+            }
+        }
+
+        // Play Note with better sound
+        function playNote(frequency, duration = 500) {
+            initAudio();
+            
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc.frequency.value = frequency;
+            osc.type = 'sine'; // Cleaner sound
+            
+            // ADSR Envelope
+            const now = audioContext.currentTime;
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(0.3, now + 0.02); // Attack
+            gain.gain.linearRampToValueAtTime(0.2, now + 0.1); // Decay
+            gain.gain.linearRampToValueAtTime(0.2, now + duration/1000 - 0.05); // Sustain
+            gain.gain.exponentialRampToValueAtTime(0.001, now + duration/1000); // Release
+            
+            osc.start(now);
+            osc.stop(now + duration/1000);
+        }
+
+        // Play Chord
+        function playChord(noteList) {
+            noteList.forEach((note, index) => {
+                const freq = noteFrequencies[note][2]; // Use middle octave
+                setTimeout(() => playNote(freq, 800), index * 150);
+            });
+        }
+
+        // Generate Random Chord based on selected chord types
+        function generateChord() {
+            let availableChords = [];
+            
+            // Check which chord types are selected in settings
+            const selectedMajor = document.querySelector('[data-chord="major"].selected');
+            const selectedMinor = document.querySelector('[data-chord="minor"].selected');
+            const selectedDiminished = document.querySelector('[data-chord="diminished"].selected');
+            const selectedAugmented = document.querySelector('[data-chord="augmented"].selected');
+            const selectedSeventh = document.querySelector('[data-chord="seventh"].selected');
+            const useInversions = document.querySelector('[data-chord="inversions"].selected');
+            
+            // Add major chords if selected
+            if (selectedMajor) {
+                Object.keys(chordDefinitions.major).forEach(key => {
+                    availableChords.push({
+                        key: key,
+                        type: 'Major',
+                        category: 'major',
+                        ...chordDefinitions.major[key]
+                    });
+                });
+            }
+            
+            // Add minor chords if selected
+            if (selectedMinor) {
+                Object.keys(chordDefinitions.minor).forEach(key => {
+                    availableChords.push({
+                        key: key + 'm',
+                        type: 'Minor',
+                        category: 'minor',
+                        ...chordDefinitions.minor[key]
+                    });
+                });
+            }
+            
+            // Add diminished chords if selected
+            if (selectedDiminished) {
+                Object.keys(chordDefinitions.diminished).forEach(key => {
+                    availableChords.push({
+                        key: key + 'dim',
+                        type: 'Diminished',
+                        category: 'diminished',
+                        ...chordDefinitions.diminished[key]
+                    });
+                });
+            }
+            
+            // Add augmented chords if selected
+            if (selectedAugmented) {
+                Object.keys(chordDefinitions.augmented).forEach(key => {
+                    availableChords.push({
+                        key: key + 'aug',
+                        type: 'Augmented',
+                        category: 'augmented',
+                        ...chordDefinitions.augmented[key]
+                    });
+                });
+            }
+            
+            // Add seventh chords if selected
+            if (selectedSeventh) {
+                Object.keys(chordDefinitions.seventh).forEach(key => {
+                    availableChords.push({
+                        key: key,
+                        type: '7th',
+                        category: 'seventh',
+                        ...chordDefinitions.seventh[key]
+                    });
+                });
+            }
+            
+            // If no chord types selected, default to major chords
+            if (availableChords.length === 0) {
+                Object.keys(chordDefinitions.major).forEach(key => {
+                    availableChords.push({
+                        key: key,
+                        type: 'Major',
+                        category: 'major',
+                        ...chordDefinitions.major[key]
+                    });
+                });
+            }
+            
+            // Select a random chord
+            const selectedChord = availableChords[Math.floor(Math.random() * availableChords.length)];
+            
+            // Apply inversions if enabled (not for 7th chords)
+            let inversionType = 'Root Position';
+            let finalNotes = selectedChord.notes;
+            
+            if (useInversions && selectedChord.category !== 'seventh' && Math.random() > 0.5) {
+                const inversionTypes = ['1st Inversion', '2nd Inversion'];
+                inversionType = inversionTypes[Math.floor(Math.random() * inversionTypes.length)];
+                
+                if (inversionType === '1st Inversion') {
+                    finalNotes = inversions['1st Inv'](selectedChord.notes);
+                } else {
+                    finalNotes = inversions['2nd Inv'](selectedChord.notes);
+                }
+            }
+            
+            return {
+                key: selectedChord.key,
+                type: selectedChord.type,
+                inversion: inversionType,
+                notes: finalNotes,
+                notation: finalNotes.join(' - ')
+            };
+        }
+
+        // Unified Display Chord (for both practice and virtual piano)
+        function displayChord() {
+            currentChord = generateChord();
+            playedNotes.clear();
+            detectedNotes.clear();
+
+            // Update frequency visualizer note markers if active
+            if (isListening && currentChord) {
+                updateNoteMarkers(currentChord.notes);
+            }
+
+            // Reset completion flag
+            processingCompletion = false;
+
+            // Clear all highlights and reset piano keys to original colors
+            document.querySelectorAll('.piano-key').forEach(key => {
+                key.classList.remove('correct', 'highlight', 'playing');
+            });
+
+            // Clear all highlights from gesture zones
+            document.querySelectorAll('.gesture-zone').forEach(zone => {
+                zone.classList.remove('correct', 'highlight', 'playing');
+            });
+            
+            // Update display based on current page
+            if (currentPage === 'practice') {
+                const display = document.getElementById('chord-display');
+                const nameEl = document.getElementById('chord-name');
+                const notationEl = document.getElementById('chord-notation');
+                const typeEl = document.getElementById('chord-type');
+                
+                display.classList.remove('correct', 'incorrect');
+                nameEl.textContent = currentChord.key;
+                
+                if (showPracticeHints) {
+                    notationEl.textContent = currentChord.notation;
+                    notationEl.style.display = 'block';
+                    // Generate sheet music
+                    generateSheetMusic(currentChord.notes, 'practice-notation-svg');
+                    document.getElementById('practice-sheet-music').style.display = 'block';
+                } else {
+                    notationEl.textContent = '';
+                    notationEl.style.display = 'none';
+                    document.getElementById('practice-sheet-music').style.display = 'none';
+                }
+                
+                typeEl.textContent = currentChord.inversion;
+            } else if (currentPage === 'virtual') {
+                updateVirtualPianoChord();
+            }
+            
+            // Start unified timer
+            startChordTimer();
+        }
+
+        // Unified circular countdown timer for Practice and Virtual modes
+        function startChordTimer() {
+            try {
+                // Clear any existing timer
+                if (typeof chordTimer !== 'undefined' && chordTimer) {
+                    clearInterval(chordTimer);
+                }
+
+                // Read time from settings slider
+                const speedSlider = document.getElementById('speed-slider');
+                maxTime = parseInt(speedSlider ? speedSlider.value : 10, 10) || 10;
+                timeRemaining = maxTime;
+
+                // Determine active section elements
+                const isVirtual = currentPage === 'virtual';
+                const timerTextEl = isVirtual
+                    ? document.getElementById('virtual-timer-text')
+                    : document.getElementById('timer-text');
+                const timerProgressEl = isVirtual
+                    ? document.getElementById('virtual-timer-progress')
+                    : document.getElementById('timer-progress');
+
+                if (!timerTextEl || !timerProgressEl) return;
+
+                // Initialize circle metrics
+                const rAttr = timerProgressEl.getAttribute('r');
+                const radius = rAttr ? parseFloat(rAttr) : 54;
+                const circumference = 2 * Math.PI * radius;
+                timerProgressEl.style.strokeDasharray = `${circumference}`;
+                timerProgressEl.style.strokeDashoffset = '0';
+
+                // Set starting text
+                timerTextEl.textContent = String(Math.ceil(timeRemaining));
+
+                // Drive high‑accuracy countdown based on elapsed time
+                const start = performance.now();
+                chordTimer = setInterval(() => {
+                    const elapsed = (performance.now() - start) / 1000;
+                    const remaining = Math.max(maxTime - elapsed, 0);
+                    timeRemaining = remaining;
+
+                    // Update numeric label
+                    timerTextEl.textContent = String(Math.ceil(remaining));
+
+                    // Update circular progress (0 -> full, circumference -> empty)
+                    const progress = Math.min(elapsed / maxTime, 1);
+                    timerProgressEl.style.strokeDashoffset = String(progress * circumference);
+
+                    // Handle timeout
+                    if (remaining <= 0) {
+                        clearInterval(chordTimer);
+
+                        // Visual feedback per section
+                        if (isVirtual) {
+                            const vcd = document.getElementById('virtual-chord-display');
+                            if (vcd) {
+                                vcd.classList.remove('correct', 'incorrect');
+                                vcd.classList.add('timeout');
+                            }
+                        } else {
+                            const pcd = document.getElementById('chord-display');
+                            if (pcd) pcd.classList.add('incorrect');
+                        }
+
+                        // Reset streak, record attempt, update stats
+                        sessionStats.streak = 0;
+                        sessionStats.total++;
+                        updateStats();
+                        playedNotes.clear();
+                        detectedNotes.clear();
+
+                        // Advance to next chord if still practicing
+                        setTimeout(() => {
+                            if (isVirtual) {
+                                const vcd = document.getElementById('virtual-chord-display');
+                                if (vcd) vcd.classList.remove('timeout');
+                            } else {
+                                const pcd = document.getElementById('chord-display');
+                                if (pcd) pcd.classList.remove('incorrect');
+                            }
+
+                            const stillPracticing = (!isVirtual && isPracticing) || (isVirtual && isVirtualPracticing);
+                            if (stillPracticing) {
+                                displayChord();
+                            } else {
+                                // If paused mid‑timeout, clear timer visuals
+                                timerTextEl.textContent = '';
+                                timerProgressEl.style.strokeDashoffset = '0';
+                            }
+                        }, 800);
+                    }
+                }, 100);
+            } catch (err) {
+                console.error('Timer error:', err);
+            }
+        }
+
+        // Update Virtual Piano Chord Display
+        function updateVirtualPianoChord() {
+            if (currentChord) {
+                document.getElementById('virtual-chord-name').textContent = currentChord.key;
+                document.getElementById('virtual-chord-notes').textContent = currentChord.notation;
+                updateGestureZones();
+                highlightPianoKeys();
+
+                // Always generate sheet music to show notes
+                generateSheetMusic(currentChord.notes, 'virtual-notation-svg');
+            }
+        }
+
+        // Update Gesture Zones for current chord
+        function updateGestureZones() {
+            const container = document.getElementById('gesture-zones');
+            container.innerHTML = '';
+            
+            const allNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            const chordNotes = currentChord ? currentChord.notes : [];
+            
+            allNotes.forEach(note => {
+                const zone = document.createElement('div');
+                zone.className = 'gesture-zone';
+                
+                if (showChordHints && chordNotes.includes(note)) {
+                    zone.classList.add('highlight');
+                }
+                
+                zone.textContent = note;
+                zone.onclick = () => playGestureNote(note);
+                container.appendChild(zone);
+            });
+        }
+
+        // Highlight Piano Keys for current chord
+        function highlightPianoKeys() {
+            document.querySelectorAll('.piano-key').forEach(key => {
+                key.classList.remove('highlight');
+            });
+            
+            if (currentChord && showChordHints) {
+                currentChord.notes.forEach(note => {
+                    const keys = document.querySelectorAll(`.piano-key[data-note="${note}"]`);
+                    keys.forEach(key => key.classList.add('highlight'));
+                });
+            }
+        }
+
+        // Play Gesture Note
+        function playGestureNote(note) {
+            const zone = event.target;
+            zone.classList.add('playing');
+
+            const freq = noteFrequencies[note][2];
+            playNote(freq, 500);
+
+            playedNotes.add(note);
+
+            // Add green feedback for correct notes (regardless of hint status)
+            if (currentChord && currentChord.notes.includes(note)) {
+                zone.classList.remove('highlight');
+                zone.classList.add('correct');
+                updateSheetMusicNote(note, true);
+            }
+
+            // Debug logging
+
+            setTimeout(() => zone.classList.remove('playing'), 300);
+
+            // Check if chord is complete
+            checkChordCompletion();
+        }
+
+        // Check Chord Completion (unified for both modes)
+        function checkChordCompletion() {
+            if (!currentChord || !currentChord.notes) {
+                return;
+            }
+
+            // Only check in active modes
+            if (currentPage === 'practice' && !isPracticing) {
+                return;
+            }
+            if (currentPage === 'virtual' && !isVirtualPracticing) {
+                return;
+            }
+
+            // Check if all chord notes have been played correctly
+            const allNotesPlayed = currentChord.notes.every(note =>
+                playedNotes.has(note) || detectedNotes.has(note)
+            );
+
+
+            if (allNotesPlayed) {
+                // Prevent multiple triggers
+                if (!processingCompletion) {
+                    processingCompletion = true;
+                    handleCorrectChord();
+                } else {
+                }
+            }
+        }
+
+        // Handle Correct Chord
+        function handleCorrectChord() {
+            clearInterval(chordTimer);
+
+            if (currentPage === 'practice') {
+                const display = document.getElementById('chord-display');
+                display.classList.add('correct');
+                const stats = getCurrentStats();
+                stats.correct++;
+                stats.streak++;
+            } else if (currentPage === 'virtual') {
+                const chordDisplay = document.getElementById('virtual-chord-display');
+                chordDisplay.classList.remove('incorrect', 'timeout');
+                chordDisplay.classList.add('correct');
+                const stats = getCurrentStats();
+                stats.correct++;
+                stats.streak++;
+            }
+
+            getCurrentStats().total++;
+            updateStats();
+
+            if (currentPage === 'virtual' && isVirtualPracticing) {
+                showToast('Correct! Next chord...', 'success', 1000);
+            } else {
+                showToast('Perfect! 🎹', 'success', 1000);
+            }
+
+            setTimeout(() => {
+                if (currentPage === 'practice') {
+                    document.getElementById('chord-display').classList.remove('correct');
+                } else if (currentPage === 'virtual') {
+                    document.getElementById('virtual-chord-display').classList.remove('correct');
+                }
+
+                // Only display next chord if still practicing
+                if ((currentPage === 'practice' && isPracticing) ||
+                    (currentPage === 'virtual' && isVirtualPracticing)) {
+                    displayChord();
+                }
+            }, 1000);
+        }
+
+        // Handle Incorrect Chord
+        function handleIncorrectChord() {
+            if (currentPage === 'practice') {
+                const display = document.getElementById('chord-display');
+                display.classList.add('incorrect');
+                getCurrentStats().streak = 0;
+            } else if (currentPage === 'virtual') {
+                const chordDisplay = document.getElementById('virtual-chord-display');
+                chordDisplay.classList.add('incorrect');
+            }
+            
+            getCurrentStats().total++;
+            updateStats();
+            playedNotes.clear();
+            detectedNotes.clear();
+            
+            setTimeout(() => {
+                if (currentPage === 'practice') {
+                    document.getElementById('chord-display').classList.remove('incorrect');
+                } else if (currentPage === 'virtual') {
+                    document.getElementById('virtual-chord-display').classList.remove('incorrect');
+                }
+            }, 2000);
+        }
+
+        // Initialize Traditional Piano Keys (Single Octave)
+        function initPianoKeys() {
+            const container = document.getElementById('piano-keys');
+            container.innerHTML = '';
+            
+            const pattern = [
+                { note: 'C', white: true },
+                { note: 'C#', white: false, position: 36 },
+                { note: 'D', white: true },
+                { note: 'D#', white: false, position: 90 },
+                { note: 'E', white: true },
+                { note: 'F', white: true },
+                { note: 'F#', white: false, position: 198 },
+                { note: 'G', white: true },
+                { note: 'G#', white: false, position: 252 },
+                { note: 'A', white: true },
+                { note: 'A#', white: false, position: 306 },
+                { note: 'B', white: true }
+            ];
+            
+            // Create single octave
+            pattern.forEach((noteInfo, index) => {
+                const key = document.createElement('div');
+                key.className = `piano-key ${noteInfo.white ? '' : 'black'}`;
+                key.dataset.note = noteInfo.note;
+                key.textContent = noteInfo.white ? noteInfo.note : '';
+                
+                if (!noteInfo.white) {
+                    key.style.left = noteInfo.position + 'px';
+                }
+                
+                key.onclick = () => {
+                    key.classList.add('playing');
+                    const freq = noteFrequencies[noteInfo.note][2]; // Middle octave
+                    playNote(freq, 500);
+
+                    playedNotes.add(noteInfo.note);
+
+                    // Add visual feedback for correct notes (regardless of hint status)
+                    if (currentChord && currentChord.notes.includes(noteInfo.note)) {
+                        key.classList.add('correct');
+                        updateSheetMusicNote(noteInfo.note, true);
+                    }
+
+                    // Debug logging for piano keys
+
+                    setTimeout(() => key.classList.remove('playing'), 500);
+                    checkChordCompletion();
+                };
+                
+                container.appendChild(key);
+            });
+        }
+
+        // Real Pitch Detection using FFT
+        function detectPitch() {
+            if (!isListening || !analyser) return;
+
+            try {
+                const bufferLength = analyser.fftSize;
+                const buffer = new Float32Array(bufferLength);
+                analyser.getFloatTimeDomainData(buffer);
+
+                // Check if we have actual audio input
+                let hasAudio = false;
+                let maxAmplitude = 0;
+                for (let i = 0; i < buffer.length; i++) {
+                    const amplitude = Math.abs(buffer[i]);
+                    maxAmplitude = Math.max(maxAmplitude, amplitude);
+                    if (amplitude > 0.01) {
+                        hasAudio = true;
+                    }
+                }
+
+                // Visual indicator that audio is being received
+                if (hasAudio && maxAmplitude > 0.008) {
+                    // Auto-correlation based pitch detection
+                    const frequency = autoCorrelate(buffer, audioContext.sampleRate);
+
+                    if (frequency > 0 && frequency < 2000) {
+                        const note = frequencyToNote(frequency);
+
+                        // Log all detections for debugging
+
+                        if (note) {
+                            // Visual feedback for ANY detected note
+                            const marker = document.querySelector(`.note-marker[data-note="${note}"]`);
+                            if (marker) {
+                                marker.classList.add('detected');
+                                setTimeout(() => marker.classList.remove('detected'), 500);
+                            }
+
+                            // Check if it's a correct note for the current chord
+                            if (currentChord && currentChord.notes.includes(note)) {
+                                detectedNotes.add(note);
+
+                                // Add visual feedback for correct note
+                                if (marker) {
+                                    marker.classList.add('active');
+                                    setTimeout(() => marker.classList.remove('active'), 1000);
+                                }
+
+                                checkChordCompletion();
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error in pitch detection:', error);
+            }
+
+            requestAnimationFrame(detectPitch);
+        }
+
+        // Auto-correlation algorithm for pitch detection
+        function autoCorrelate(buffer, sampleRate) {
+            const SIZE = buffer.length;
+            const MAX_SAMPLES = Math.floor(SIZE / 2);
+            let best_offset = -1;
+            let best_correlation = 0;
+            let rms = 0;
+            
+            // Calculate RMS
+            for (let i = 0; i < SIZE; i++) {
+                const val = buffer[i];
+                rms += val * val;
+            }
+            rms = Math.sqrt(rms / SIZE);
+
+            // Lower threshold for better sensitivity
+            if (rms < 0.005) return -1;
+            
+            let correlations = new Array(MAX_SAMPLES);
+            
+            for (let offset = 0; offset < MAX_SAMPLES; offset++) {
+                let correlation = 0;
+                
+                for (let i = 0; i < MAX_SAMPLES; i++) {
+                    correlation += Math.abs((buffer[i]) - (buffer[i + offset]));
+                }
+                
+                correlation = 1 - (correlation / MAX_SAMPLES);
+                correlations[offset] = correlation;
+                
+                if (correlation > 0.9 && correlation > best_correlation) {
+                    best_correlation = correlation;
+                    best_offset = offset;
+                }
+            }
+            
+            if (best_correlation > 0.01) {
+                return sampleRate / best_offset;
+            }
+            return -1;
+        }
+
+        // Convert frequency to note name
+        function frequencyToNote(frequency) {
+            const A4 = 440;
+
+            if (frequency < 80 || frequency > 2000) return null;
+
+            // Calculate the number of half steps from A4
+            const halfSteps = 12 * Math.log2(frequency / A4);
+            const noteIndex = Math.round(halfSteps) + 9; // A is the 9th note in our array
+
+            // Wrap around for octaves
+            const notePosition = ((noteIndex % 12) + 12) % 12;
+
+            const detectedNote = notes[notePosition];
+
+            // Debug logging when in debug mode
+            if (debugMode && frequency > 100) {
+                const octave = Math.floor((noteIndex + 9) / 12) + 3;
+            }
+
+            return detectedNote;
+        }
+
+        // Generate Sheet Music Notation
+        function generateSheetMusic(chordNotes, svgId) {
+            const svg = document.getElementById(svgId);
+            if (!svg) return;
+
+            // Clear existing content
+            svg.innerHTML = '';
+
+            // Define note positions on staff (middle C = 0)
+            const notePositions = {
+                'C': 0,
+                'C#': 0,
+                'D': 1,
+                'D#': 1,
+                'E': 2,
+                'F': 3,
+                'F#': 3,
+                'G': 4,
+                'G#': 4,
+                'A': 5,
+                'A#': 5,
+                'B': 6
+            };
+
+            // Staff parameters (scaled down for smaller viewBox)
+            const staffTop = 25;
+            const lineSpacing = 7;
+            const noteRadius = 3.5;
+
+            // Draw staff lines with enhanced appearance
+            for (let i = 0; i < 5; i++) {
+                const y = staffTop + (i * lineSpacing);
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', '15');
+                line.setAttribute('y1', y);
+                line.setAttribute('x2', '335');
+                line.setAttribute('y2', y);
+                line.setAttribute('class', 'staff-line');
+                svg.appendChild(line);
+            }
+
+            // Draw treble clef with enhanced style
+            const clef = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            clef.setAttribute('x', '25');
+            clef.setAttribute('y', '52');
+            clef.setAttribute('font-size', '40');
+            clef.setAttribute('class', 'clef-symbol');
+            clef.textContent = '𝄞';
+            svg.appendChild(clef);
+
+            // Draw notes with enhanced aesthetics
+            chordNotes.forEach((note, index) => {
+                const x = 120 + (index * 50);
+                const basePos = notePositions[note];
+                // Assuming middle octave (C4), adjust Y position
+                const y = staffTop + 28 - (basePos * lineSpacing / 2);
+
+                // Create note group for better organization
+                const noteGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                noteGroup.setAttribute('class', 'note-group');
+                noteGroup.setAttribute('data-note', note);
+
+                // Determine styling based on whether note has been played
+                const isPlayed = playedNotes.has(note) || detectedNotes.has(note);
+                const noteClass = isPlayed ? 'note-head correct' : 'note-head';
+                const stemClass = isPlayed ? 'note-stem correct' : 'note-stem';
+
+                // Draw enhanced note head
+                const noteHead = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+                noteHead.setAttribute('cx', x);
+                noteHead.setAttribute('cy', y);
+                noteHead.setAttribute('rx', noteRadius * 1.4);
+                noteHead.setAttribute('ry', noteRadius * 1.1);
+                noteHead.setAttribute('transform', `rotate(-20 ${x} ${y})`);
+                noteHead.setAttribute('class', noteClass);
+                noteHead.setAttribute('data-note', note);
+                noteGroup.appendChild(noteHead);
+
+                // Draw enhanced stem
+                const stem = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                stem.setAttribute('x1', x + noteRadius * 1.2);
+                stem.setAttribute('y1', y);
+                stem.setAttribute('x2', x + noteRadius * 1.2);
+                stem.setAttribute('y2', y - 30);
+                stem.setAttribute('class', stemClass);
+                stem.setAttribute('data-note', note);
+                noteGroup.appendChild(stem);
+                
+                // Add sharp/flat symbols with better positioning
+                if (note.includes('#')) {
+                    const sharp = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    sharp.setAttribute('x', x - 18);
+                    sharp.setAttribute('y', y + 4);
+                    sharp.setAttribute('class', 'sharp-symbol');
+                    sharp.textContent = '♯';
+                    noteGroup.appendChild(sharp);
+                } else if (note.includes('♭')) {
+                    const flat = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    flat.setAttribute('x', x - 18);
+                    flat.setAttribute('y', y + 4);
+                    flat.setAttribute('class', 'flat-symbol');
+                    flat.textContent = '♭';
+                    noteGroup.appendChild(flat);
+                }
+
+                // Add ledger lines if needed (for C and below)
+                if (basePos === 0) { // C: add a ledger aligned just below the bottom staff line
+                    const ledgerY = y + lineSpacing; // one step below the note position
+                    const ledger = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    ledger.setAttribute('x1', x - 12);
+                    ledger.setAttribute('y1', ledgerY);
+                    ledger.setAttribute('x2', x + 12);
+                    ledger.setAttribute('y2', ledgerY);
+                    ledger.setAttribute('class', 'staff-line');
+                    svg.appendChild(ledger);
+                }
+
+                // Add the note group to SVG
+                svg.appendChild(noteGroup);
+            });
+        }
+
+        // Toggle Practice Hints
+        function togglePracticeHints() {
+            showPracticeHints = !showPracticeHints;
+            const btn = document.getElementById('practice-hints-button');
+            const notationEl = document.getElementById('chord-notation');
+            const sheetMusicEl = document.getElementById('practice-sheet-music');
+            
+            if (showPracticeHints) {
+                btn.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="16" x2="12" y2="12"/>
+                        <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <span class="label">Hide Notes</span>
+                `;
+                if (currentChord) {
+                    notationEl.textContent = currentChord.notation;
+                    notationEl.style.display = 'block';
+                    generateSheetMusic(currentChord.notes, 'practice-notation-svg');
+                    sheetMusicEl.style.display = 'block';
+                }
+            } else {
+                btn.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="16" x2="12" y2="12"/>
+                        <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <span class="label">Show Notes</span>
+                `;
+                notationEl.textContent = '';
+                notationEl.style.display = 'none';
+                sheetMusicEl.style.display = 'none';
+            }
+        }
+
+        // Toggle Practice
+        function togglePractice() {
+            const button = document.getElementById('start-button');
+            const icon = button.querySelector('.virtual-control-icon svg');
+            const label = button.querySelector('.virtual-control-label');
+            isPracticing = !isPracticing;
+
+            if (isPracticing) {
+                button.classList.add('active');
+                if (icon) {
+                    icon.innerHTML = `
+                        <rect x="6" y="4" width="4" height="16"/>
+                        <rect x="14" y="4" width="4" height="16"/>
+                    `;
+                }
+                if (label) label.textContent = 'Pause';
+                displayChord();
+            } else {
+                button.classList.remove('active');
+                if (icon) {
+                    icon.innerHTML = `
+                        <path d="M8 5v14l11-7z"/>
+                    `;
+                }
+                if (label) label.textContent = 'Start';
+                clearInterval(chordTimer);
+                document.getElementById('timer-text').textContent = '';
+                document.getElementById('timer-progress').style.strokeDashoffset = 0;
+                document.getElementById('chord-name').textContent = 'Paused';
+                document.getElementById('chord-type').textContent = 'Press Start to Continue';
+            }
+        }
+
+        // Restart Session
+        function restartSession() {
+            // Reset session stats
+            sessionStats = {
+                streak: 0,
+                correct: 0,
+                total: 0
+            };
+            
+            // Reset displays
+            clearInterval(chordTimer);
+            document.getElementById('chord-display').classList.remove('correct', 'incorrect');
+            document.getElementById('chord-name').textContent = 'Welcome';
+            document.getElementById('chord-notation').textContent = '';
+            document.getElementById('chord-type').textContent = 'Press Start to Begin';
+            document.getElementById('timer-text').textContent = '';
+            document.getElementById('timer-progress').style.strokeDashoffset = 0;
+            
+            // Reset practice state
+            isPracticing = false;
+            const button = document.getElementById('start-button');
+            button.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+                <span class="label">Start</span>
+            `;
+            
+            updateStats();
+            showToast('Session restarted! Good luck!', 'success', 2000);
+        }
+
+        // Skip Chord
+        function skipChord() {
+            if (isPracticing || currentPage === 'virtual') {
+                showToast('Skipping...', 'subtle', 1500);
+                displayChord();
+            }
+        }
+
+        // Toggle Microphone
+        async function toggleMicrophone() {
+            const button = document.getElementById('mic-button');
+            const visualizer = document.getElementById('frequency-visualizer');
+            isListening = !isListening;
+
+            if (isListening) {
+                button.classList.add('active');
+                button.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" fill="currentColor"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                        <line x1="8" y1="23" x2="16" y2="23"/>
+                    </svg>
+                    <span class="label">Mic On</span>
+                `;
+                visualizer.classList.add('active');
+                const waveformContainer = document.getElementById('waveform-container');
+                if (waveformContainer) waveformContainer.classList.add('active');
+                await startListening();
+                startFrequencyVisualization();
+                startWaveformVisualization();
+            } else {
+                button.classList.remove('active');
+                button.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                        <line x1="8" y1="23" x2="16" y2="23"/>
+                    </svg>
+                    <span class="label">Mic Off</span>
+                `;
+                visualizer.classList.remove('active');
+                const waveformContainer = document.getElementById('waveform-container');
+                if (waveformContainer) waveformContainer.classList.remove('active');
+                stopListening();
+                stopFrequencyVisualization();
+                stopWaveformVisualization();
+            }
+        }
+
+        // Frequency Visualization Variables
+        let visualizationAnimationId = null;
+        let visualizerCanvas = null;
+        let visualizerCtx = null;
+        let audioLevelMeter = null;
+
+        // Waveform Visualization Variables
+        let waveformAnimationId = null;
+        let waveformCanvas = null;
+        let waveformCtx = null;
+        let waveformHistory = [];
+
+        // Start Frequency Visualization
+        function startFrequencyVisualization() {
+            visualizerCanvas = document.getElementById('frequency-canvas');
+            if (!visualizerCanvas) {
+                console.error('Canvas element not found');
+                return;
+            }
+
+            visualizerCtx = visualizerCanvas.getContext('2d');
+
+            // Set canvas size properly
+            const rect = visualizerCanvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            visualizerCanvas.width = rect.width * dpr;
+            visualizerCanvas.height = rect.height * dpr;
+            visualizerCtx.scale(dpr, dpr);
+
+            if (currentChord) {
+                updateNoteMarkers(currentChord.notes);
+            }
+
+            // Add audio level indicator
+            createAudioLevelMeter();
+            drawFrequencySpectrum();
+        }
+
+        // Create Audio Level Meter
+        function createAudioLevelMeter() {
+            const visualizer = document.getElementById('frequency-visualizer');
+            if (!visualizer) return;
+
+            // Remove existing meter if present
+            const existingMeter = document.getElementById('audio-level-meter');
+            if (existingMeter) existingMeter.remove();
+
+            audioLevelMeter = document.createElement('div');
+            audioLevelMeter.id = 'audio-level-meter';
+            audioLevelMeter.style.cssText = `
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                width: 150px;
+                height: 20px;
+                background: rgba(0,0,0,0.1);
+                border-radius: 10px;
+                overflow: hidden;
+                border: 1px solid var(--border);
+            `;
+
+            const levelBar = document.createElement('div');
+            levelBar.id = 'audio-level-bar';
+            levelBar.style.cssText = `
+                height: 100%;
+                width: 0%;
+                background: linear-gradient(90deg, #27ae60, #f39c12, #e74c3c);
+                transition: width 0.1s ease;
+                border-radius: 10px;
+            `;
+
+            const levelText = document.createElement('div');
+            levelText.id = 'audio-level-text';
+            levelText.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: var(--text-primary);
+                font-weight: 600;
+            `;
+            levelText.textContent = 'Audio Level';
+
+            audioLevelMeter.appendChild(levelBar);
+            audioLevelMeter.appendChild(levelText);
+            visualizer.appendChild(audioLevelMeter);
+        }
+
+        // Stop Frequency Visualization
+        function stopFrequencyVisualization() {
+            if (visualizationAnimationId) {
+                cancelAnimationFrame(visualizationAnimationId);
+                visualizationAnimationId = null;
+            }
+
+            // Clear canvas
+            if (visualizerCtx && visualizerCanvas) {
+                visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+            }
+
+            // Remove audio level meter
+            const meter = document.getElementById('audio-level-meter');
+            if (meter) meter.remove();
+        }
+
+        // Test Audio Input
+        function testAudioInput() {
+            if (!analyser) return;
+
+            const testBuffer = new Float32Array(analyser.fftSize);
+            analyser.getFloatTimeDomainData(testBuffer);
+
+            let maxVal = 0;
+            for (let i = 0; i < testBuffer.length; i++) {
+                maxVal = Math.max(maxVal, Math.abs(testBuffer[i]));
+            }
+
+
+            if (maxVal < 0.001) {
+                console.warn('Very low or no audio input detected. Check microphone.');
+                showToast('Speak or play to test microphone input', 'info', 3000);
+            } else {
+            }
+        }
+
+        // Draw Frequency Spectrum
+        function drawFrequencySpectrum() {
+            if (!isListening || !analyser || !visualizerCanvas || !visualizerCtx) {
+                if (visualizationAnimationId) {
+                    cancelAnimationFrame(visualizationAnimationId);
+                    visualizationAnimationId = null;
+                }
+                return;
+            }
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteFrequencyData(dataArray);
+
+            // Update audio level meter
+            updateAudioLevel(dataArray);
+
+            // Get actual canvas dimensions
+            const rect = visualizerCanvas.getBoundingClientRect();
+            const width = rect.width;
+            const height = rect.height;
+            visualizerCtx.clearRect(0, 0, width, height);
+
+            // Draw background gradient
+            const gradient = visualizerCtx.createLinearGradient(0, height, 0, 0);
+            gradient.addColorStop(0, 'rgba(44, 62, 80, 0.02)');
+            gradient.addColorStop(1, 'rgba(44, 62, 80, 0.05)');
+            visualizerCtx.fillStyle = gradient;
+            visualizerCtx.fillRect(0, 0, width, height);
+
+            // Calculate frequency range (20Hz to 2000Hz for piano range)
+            const minFreq = 20;
+            const maxFreq = 2000;
+            const nyquist = audioContext.sampleRate / 2;
+            const minBin = Math.floor(minFreq / nyquist * bufferLength);
+            const maxBin = Math.ceil(maxFreq / nyquist * bufferLength);
+            const binRange = maxBin - minBin;
+
+            // Draw frequency bars
+            const barWidth = width / binRange;
+            let peakValue = 0;
+            let peakBin = 0;
+
+            for (let i = 0; i < binRange; i++) {
+                const binIndex = minBin + i;
+                const value = dataArray[binIndex];
+                const barHeight = (value / 255) * height * 0.8;
+
+                // Track peak
+                if (value > peakValue) {
+                    peakValue = value;
+                    peakBin = binIndex;
+                }
+
+                // Color based on intensity
+                const hue = 200 - (value / 255) * 60; // Blue to cyan
+                const saturation = 50 + (value / 255) * 50;
+                const lightness = 30 + (value / 255) * 30;
+
+                visualizerCtx.fillStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+                visualizerCtx.fillRect(i * barWidth, height - barHeight, barWidth - 1, barHeight);
+            }
+
+            // Draw harmonic markers if chord is active
+            if (currentChord && currentChord.notes) {
+                drawHarmonicMarkers(currentChord.notes, minFreq, maxFreq, width, height);
+            }
+
+            // Update peak frequency display
+            if (peakValue > 20) { // Lower threshold for better sensitivity
+                const peakFrequency = (peakBin / bufferLength) * nyquist;
+                const peakElement = document.getElementById('peak-frequency');
+                const noteElement = document.getElementById('detected-note');
+
+                if (peakElement) {
+                    peakElement.textContent = `Peak: ${Math.round(peakFrequency)} Hz`;
+                }
+
+                const detectedNote = frequencyToNote(peakFrequency);
+                if (detectedNote && noteElement) {
+                    noteElement.textContent = `Note: ${detectedNote}`;
+                    noteElement.style.color = currentChord && currentChord.notes.includes(detectedNote) ? '#27ae60' : 'var(--text-secondary)';
+                    highlightDetectedNote(detectedNote);
+                } else if (noteElement) {
+                    noteElement.textContent = 'Note: --';
+                    noteElement.style.color = 'var(--text-secondary)';
+                }
+            } else {
+                const noteElement = document.getElementById('detected-note');
+                if (noteElement) {
+                    noteElement.textContent = 'Note: --';
+                    noteElement.style.color = 'var(--text-secondary)';
+                }
+            }
+
+            visualizationAnimationId = requestAnimationFrame(drawFrequencySpectrum);
+        }
+
+        // Update Audio Level Display
+        function updateAudioLevel(dataArray) {
+            if (!audioLevelMeter) return;
+
+            // Calculate average level
+            let sum = 0;
+            let max = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                sum += dataArray[i];
+                max = Math.max(max, dataArray[i]);
+            }
+            const average = sum / dataArray.length;
+            const percentage = Math.min(100, (max / 255) * 100);
+
+            const levelBar = document.getElementById('audio-level-bar');
+            const levelText = document.getElementById('audio-level-text');
+
+            if (levelBar) {
+                levelBar.style.width = percentage + '%';
+            }
+
+            // Practice page input level meter
+            const inputMeter = document.getElementById('input-level-meter');
+            const inputFill = document.getElementById('input-level-fill');
+            if (inputMeter && inputFill) {
+                inputMeter.style.display = 'flex';
+                inputFill.style.setProperty('--level', Math.round(percentage) + '%');
+            }
+
+            if (levelText) {
+                if (percentage > 5) {
+                    levelText.textContent = `Level: ${Math.round(percentage)}%`;
+                } else {
+                    levelText.textContent = 'No Input';
+                }
+            }
+        }
+
+        // Draw Harmonic Markers
+        function drawHarmonicMarkers(notes, minFreq, maxFreq, width, height) {
+            const noteFrequencies = {
+                'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13,
+                'E': 329.63, 'F': 349.23, 'F#': 369.99, 'G': 392.00,
+                'G#': 415.30, 'A': 440.00, 'A#': 466.16, 'B': 493.88
+            };
+
+            visualizerCtx.strokeStyle = 'rgba(39, 174, 96, 0.3)';
+            visualizerCtx.lineWidth = 2;
+            visualizerCtx.setLineDash([5, 5]);
+
+            notes.forEach(note => {
+                const baseFreq = noteFrequencies[note];
+                if (baseFreq) {
+                    // Draw fundamental and first 3 harmonics
+                    for (let harmonic = 1; harmonic <= 3; harmonic++) {
+                        const freq = baseFreq * harmonic;
+                        if (freq >= minFreq && freq <= maxFreq) {
+                            const x = ((freq - minFreq) / (maxFreq - minFreq)) * width;
+
+                            visualizerCtx.beginPath();
+                            visualizerCtx.moveTo(x, 0);
+                            visualizerCtx.lineTo(x, height);
+                            visualizerCtx.stroke();
+
+                            // Label fundamental frequency
+                            if (harmonic === 1) {
+                                visualizerCtx.fillStyle = 'rgba(39, 174, 96, 0.8)';
+                                visualizerCtx.font = '10px Inter';
+                                visualizerCtx.fillText(note, x - 5, 10);
+                            }
+                        }
+                    }
+                }
+            });
+
+            visualizerCtx.setLineDash([]);
+        }
+
+        // Update Note Markers
+        function updateNoteMarkers(notes) {
+            const noteFrequencies = {
+                'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13,
+                'E': 329.63, 'F': 349.23, 'F#': 369.99, 'G': 392.00,
+                'G#': 415.30, 'A': 440.00, 'A#': 466.16, 'B': 493.88
+            };
+
+            const markersContainer = document.getElementById('note-markers');
+            markersContainer.innerHTML = '';
+
+            notes.forEach(note => {
+                const marker = document.createElement('div');
+                marker.className = 'note-marker';
+                marker.dataset.note = note;
+
+                const noteDiv = document.createElement('div');
+                noteDiv.className = 'note-marker-note';
+                noteDiv.textContent = note;
+
+                const freqDiv = document.createElement('div');
+                freqDiv.className = 'note-marker-freq';
+                freqDiv.textContent = `${noteFrequencies[note]?.toFixed(1) || '---'} Hz`;
+
+                marker.appendChild(noteDiv);
+                marker.appendChild(freqDiv);
+                markersContainer.appendChild(marker);
+            });
+        }
+
+        // Highlight Detected Note
+        function highlightDetectedNote(note) {
+            const markers = document.querySelectorAll('.note-marker');
+            markers.forEach(marker => {
+                if (marker.dataset.note === note) {
+                    marker.classList.add('detected');
+                    setTimeout(() => marker.classList.remove('detected'), 500);
+
+                    // Check for resonance (if multiple harmonics are present)
+                    checkForResonance(note);
+                }
+            });
+        }
+
+        // Check for Resonance
+        function checkForResonance(note) {
+            if (!analyser) return;
+
+            const noteFrequencies = {
+                'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13,
+                'E': 329.63, 'F': 349.23, 'F#': 369.99, 'G': 392.00,
+                'G#': 415.30, 'A': 440.00, 'A#': 466.16, 'B': 493.88
+            };
+
+            const fundamental = noteFrequencies[note];
+            if (!fundamental) return;
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteFrequencyData(dataArray);
+
+            const nyquist = audioContext.sampleRate / 2;
+            let harmonicsDetected = 0;
+
+            // Check for first 3 harmonics
+            for (let h = 1; h <= 3; h++) {
+                const freq = fundamental * h;
+                const bin = Math.round(freq / nyquist * bufferLength);
+                if (bin < bufferLength && dataArray[bin] > 100) {
+                    harmonicsDetected++;
+                }
+            }
+
+            // Show resonance indicator if multiple harmonics detected
+            const indicator = document.getElementById('physics-indicator');
+            const bar = document.getElementById('resonance-meter');
+            const fill = document.getElementById('resonance-fill');
+
+            if (harmonicsDetected >= 2) {
+                if (indicator) {
+                    indicator.style.display = 'flex';
+                    indicator.classList.add('resonance');
+                    setTimeout(() => {
+                        indicator.style.display = 'none';
+                        indicator.classList.remove('resonance');
+                    }, 1500);
+                }
+                if (bar && fill) {
+                    bar.style.display = 'flex';
+                    // Map harmonics count to level (2 -> 66%, 3 -> 100%)
+                    const level = Math.min(100, harmonicsDetected * 34);
+                    fill.style.setProperty('--resonance-level', level + '%');
+                }
+            } else {
+                if (fill) {
+                    fill.style.setProperty('--resonance-level', '10%');
+                }
+            }
+        }
+
+        // Start Listening
+        async function startListening() {
+            try {
+                initAudio();
+                if (audioContext && audioContext.state === 'suspended') {
+                    try { await audioContext.resume(); } catch(e) {}
+                }
+                micStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: false,
+                        noiseSuppression: false,
+                        autoGainControl: false
+                    }
+                });
+                
+                microphone = audioContext.createMediaStreamSource(micStream);
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 4096; // Higher resolution for better pitch detection
+                analyser.smoothingTimeConstant = 0.85;
+                analyser.minDecibels = -90;
+                analyser.maxDecibels = -10;
+                microphone.connect(analyser);
+
+                // Test audio input
+                setTimeout(() => testAudioInput(), 500);
+
+                detectPitch();
+                showToast('Microphone activated! Play your chords.', 'success', 2000);
+            } catch (error) {
+                console.error('Microphone access denied:', error);
+                showToast('Please allow microphone access', 'warning', 3000);
+                isListening = false;
+                document.getElementById('mic-button').classList.remove('active');
+            }
+        }
+
+        // Stop Listening
+        function stopListening() {
+            if (microphone) {
+                microphone.disconnect();
+                microphone = null;
+            }
+            if (micStream) {
+                micStream.getTracks().forEach(track => track.stop());
+                micStream = null;
+            }
+            if (analyser) {
+                analyser = null;
+            }
+        }
+
+        // Update Stats
+        function updateStats() {
+            // Practice stats UI
+            const pAcc = sessionStatsPractice.total > 0 ? Math.round((sessionStatsPractice.correct / sessionStatsPractice.total) * 100) : 0;
+            const pStreakEl = document.getElementById('streak-count');
+            const pTotalEl = document.getElementById('total-chords');
+            const pAccEl = document.getElementById('accuracy');
+            if (pStreakEl) pStreakEl.textContent = sessionStatsPractice.streak;
+            if (pTotalEl) pTotalEl.textContent = sessionStatsPractice.total;
+            if (pAccEl) pAccEl.textContent = `${pAcc}%`;
+
+            // Virtual stats UI
+            const vAccVal = sessionStatsVirtual.total > 0 ? Math.round((sessionStatsVirtual.correct / sessionStatsVirtual.total) * 100) : 0;
+            const vStreakEl = document.getElementById('v-streak-count');
+            const vTotalEl = document.getElementById('v-total-chords');
+            const vAccEl = document.getElementById('v-accuracy');
+            if (vStreakEl) vStreakEl.textContent = sessionStatsVirtual.streak;
+            if (vTotalEl) vTotalEl.textContent = sessionStatsVirtual.total;
+            if (vAccEl) vAccEl.textContent = `${vAccVal}%`;
+
+            // Lifetime (derive at render time)
+            lifetimeStats.bestStreak = Math.max(lifetimeStats.bestStreak, sessionStatsPractice.streak, sessionStatsVirtual.streak);
+            lifetimeStats.totalCorrect = sessionStatsPractice.correct + sessionStatsVirtual.correct;
+            lifetimeStats.totalPlayed = sessionStatsPractice.total + sessionStatsVirtual.total;
+            localStorage.setItem('chordMasterLifetimeStats', JSON.stringify(lifetimeStats));
+        }
+
+        // Switch Page
+        function switchPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-button').forEach(b => b.classList.remove('active'));
+
+            document.getElementById(`${page}-page`).classList.add('active');
+            event.target.closest('.nav-button').classList.add('active');
+
+            currentPage = page;
+
+            // Metronome removed
+
+            // Handle page-specific logic
+            if (page === 'virtual') {
+                if (!currentChord) {
+                    currentChord = generateChord();
+                }
+                updateVirtualPianoChord();
+                if (isPracticing) {
+                    startChordTimer();
+                }
+            } else if (page === 'practice') {
+                if (isPracticing) {
+                    startChordTimer();
+                }
+            } else {
+                clearInterval(chordTimer);
+            }
+        }
+
+        // Toggle Chord Visibility
+        // REMOVED DUPLICATE - See line 3918 for the working version
+
+        // Switch Piano Mode
+        function switchPianoMode(mode) {
+            document.querySelectorAll('.mode-button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('gesture-piano').classList.toggle('active', mode === 'gesture');
+            document.getElementById('traditional-piano').classList.toggle('active', mode === 'traditional');
+            
+            if (mode === 'traditional') {
+                highlightPianoKeys();
+            }
+        }
+
+        // Show Toast
+        function showToast(message, type = 'default', duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast';
+            
+            if (type !== 'default') {
+                toast.classList.add(type);
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // Show Help
+        function showHelp() {
+            document.getElementById('help-overlay').classList.add('active');
+        }
+
+        // Close Help
+        function closeHelp() {
+            document.getElementById('help-overlay').classList.remove('active');
+        }
+
+        // Settings Event Listeners
+        document.getElementById('speed-slider').addEventListener('input', (e) => {
+            document.getElementById('speed-value').textContent = `${e.target.value}s`;
+        });
+
+        // Metronome removed: no event listeners
+
+        document.getElementById('volume-slider').addEventListener('input', (e) => {
+            document.getElementById('volume-value').textContent = `${e.target.value}%`;
+            if (window.gainNode) {
+                window.gainNode.gain.value = e.target.value / 100 * 0.5;
+            }
+        });
+
+        // Setting Options Click Handlers
+        document.querySelectorAll('.setting-option').forEach(option => {
+            option.addEventListener('click', () => {
+                option.classList.toggle('selected');
+                saveSettings();
+            });
+        });
+
+        // Save Settings
+        function saveSettings() {
+            const settings = {
+                speed: document.getElementById('speed-slider').value,
+                volume: document.getElementById('volume-slider').value,
+                chordTypes: Array.from(document.querySelectorAll('[data-chord].selected')).map(el => el.dataset.chord)
+            };
+            
+            localStorage.setItem('chordMasterSettings', JSON.stringify(settings));
+        }
+
+        // Load Settings
+        function loadSettings() {
+            const saved = localStorage.getItem('chordMasterSettings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                
+                if (settings.speed) {
+                    document.getElementById('speed-slider').value = settings.speed;
+                    document.getElementById('speed-value').textContent = `${settings.speed}s`;
+                }
+                
+                if (settings.volume) {
+                    document.getElementById('volume-slider').value = settings.volume;
+                    document.getElementById('volume-value').textContent = `${settings.volume}%`;
+                }
+                
+                if (settings.chordTypes && settings.chordTypes.length > 0) {
+                    // Clear all selections first
+                    document.querySelectorAll('[data-chord]').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+                    // Apply saved selections
+                    settings.chordTypes.forEach(type => {
+                        const el = document.querySelector(`[data-chord="${type}"]`);
+                        if (el) el.classList.add('selected');
+                    });
+                }
+            }
+            
+            const savedLifetimeStats = localStorage.getItem('chordMasterLifetimeStats');
+            if (savedLifetimeStats) {
+                lifetimeStats = JSON.parse(savedLifetimeStats);
+            }
+        }
+
+        // Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                self.addEventListener('install', event => {
+                    self.skipWaiting();
+                });
+                
+                self.addEventListener('activate', event => {
+                    event.waitUntil(clients.claim());
+                });
+                
+                self.addEventListener('fetch', event => {
+                    event.respondWith(
+                        fetch(event.request).catch(() => {
+                            return new Response('Offline mode');
+                        })
+                    );
+                });
+            `;
+            
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            
+            navigator.serviceWorker.register(swUrl).catch(console.error);
+        }
+
+        // ========================================
+        // CONSOLIDATED BUTTON FUNCTIONS (NO DUPLICATES)
+        // ========================================
+
+        // PRACTICE SECTION BUTTONS
+
+        // Toggle Practice (START/PAUSE) - MAIN FUNCTION
+        window.togglePractice = function() {
+            const button = document.getElementById('start-button');
+            const icon = button.querySelector('.virtual-control-icon svg');
+            const label = button.querySelector('.virtual-control-label');
+            isPracticing = !isPracticing;
+
+            if (isPracticing) {
+                button.classList.add('active');
+                if (icon) {
+                    icon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+                }
+                if (label) label.textContent = 'Pause';
+                currentPage = 'practice';
+                displayChord();
+            } else {
+                button.classList.remove('active');
+                if (icon) {
+                    icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                }
+                if (label) label.textContent = 'Start';
+                clearInterval(chordTimer);
+                document.getElementById('timer-text').textContent = '';
+                document.getElementById('timer-progress').style.strokeDashoffset = 0;
+                document.getElementById('chord-name').textContent = 'Paused';
+                document.getElementById('chord-type').textContent = 'Press Start to Continue';
+            }
+        }
+
+        // Restart Session - MAIN FUNCTION
+        window.restartSession = function() {
+            sessionStatsPractice = { streak: 0, correct: 0, total: 0 };
+            clearInterval(chordTimer);
+
+            document.getElementById('chord-display').classList.remove('correct', 'incorrect');
+            document.getElementById('chord-name').textContent = 'Welcome';
+            document.getElementById('chord-notation').textContent = '';
+            document.getElementById('chord-type').textContent = 'Press Start to Begin';
+            document.getElementById('timer-text').textContent = '';
+            document.getElementById('timer-progress').style.strokeDashoffset = 0;
+
+            isPracticing = false;
+            const button = document.getElementById('start-button');
+            const icon = button.querySelector('.virtual-control-icon svg');
+            const label = button.querySelector('.virtual-control-label');
+
+            button.classList.remove('active');
+            if (icon) icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+            if (label) label.textContent = 'Start';
+
+            updateStats();
+            showToast('Session restarted', 'subtle', 2000);
+        }
+
+        // Skip Chord - MAIN FUNCTION
+        window.skipChord = function() {
+            if (isPracticing) {
+                showToast('Skipping...', 'subtle', 1500);
+                currentPage = 'practice';
+                displayChord();
+            }
+        }
+
+        // Toggle Microphone - MAIN FUNCTION
+        window.toggleMicrophone = async function() {
+            const button = document.getElementById('mic-button');
+            const label = button.querySelector('.virtual-control-label');
+            const visualizer = document.getElementById('frequency-visualizer');
+            isListening = !isListening;
+
+            if (isListening) {
+                button.classList.add('active');
+                if (label) label.textContent = 'Mic On';
+                await startListening();
+                // Show input level meter immediately
+                const inputMeter = document.getElementById('input-level-meter');
+                if (inputMeter) inputMeter.style.display = 'flex';
+                if (visualizer) visualizer.classList.add('active');
+                if (typeof startFrequencyVisualization === 'function') startFrequencyVisualization();
+                if (typeof startWaveformVisualization === 'function') startWaveformVisualization();
+            } else {
+                button.classList.remove('active');
+                if (label) label.textContent = 'Mic Off';
+                stopListening();
+                // Hide input level meter
+                const inputMeter = document.getElementById('input-level-meter');
+                if (inputMeter) inputMeter.style.display = 'none';
+                if (visualizer) visualizer.classList.remove('active');
+                if (typeof stopFrequencyVisualization === 'function') stopFrequencyVisualization();
+                if (typeof stopWaveformVisualization === 'function') stopWaveformVisualization();
+            }
+        }
+
+        // Toggle Practice Hints - MAIN FUNCTION
+        window.togglePracticeHints = function() {
+            showPracticeHints = !showPracticeHints;
+            const btn = document.getElementById('practice-hints-button');
+            const label = btn.querySelector('.virtual-control-label');
+            const notationEl = document.getElementById('chord-notation');
+            const sheetMusicEl = document.getElementById('practice-sheet-music');
+
+            if (showPracticeHints) {
+                if (label) label.textContent = 'Hide Notes';
+                if (currentChord && isPracticing) {
+                    notationEl.textContent = currentChord.notation;
+                    notationEl.style.display = 'block';
+                    generateSheetMusic(currentChord.notes, 'practice-notation-svg');
+                    sheetMusicEl.style.display = 'block';
+                }
+            } else {
+                if (label) label.textContent = 'Show Notes';
+                notationEl.textContent = '';
+                notationEl.style.display = 'none';
+                sheetMusicEl.style.display = 'none';
+            }
+        }
+
+        // VIRTUAL PIANO SECTION BUTTONS
+
+        // Restart Virtual Session - MAIN FUNCTION
+        window.restartVirtualSession = function() {
+            sessionStatsVirtual = { streak: 0, correct: 0, total: 0 };
+            clearInterval(chordTimer);
+
+            document.getElementById('virtual-chord-display').classList.remove('correct', 'incorrect', 'timeout');
+            document.getElementById('virtual-timer-text').textContent = '';
+            document.getElementById('virtual-timer-progress').style.strokeDashoffset = 0;
+            document.getElementById('virtual-chord-name').textContent = 'C Major';
+            document.getElementById('virtual-chord-notes').textContent = 'C - E - G';
+            document.getElementById('virtual-chord-instruction').textContent = 'Press Start to Begin';
+
+            isVirtualPracticing = false;
+            const button = document.getElementById('virtual-start-button');
+            const icon = button.querySelector('.virtual-control-icon svg');
+            const label = button.querySelector('.virtual-control-label');
+
+            button.classList.remove('active');
+            if (icon) icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+            if (label) label.textContent = 'Start';
+
+            playedNotes.clear();
+            detectedNotes.clear();
+            updateStats();
+            showToast('Session restarted', 'subtle', 2000);
+        }
+
+        // Skip Virtual Chord - MAIN FUNCTION
+        window.skipVirtualChord = function() {
+            if (isVirtualPracticing) {
+                showToast('Skipping...', 'subtle', 1500);
+                currentPage = 'virtual';
+                playedNotes.clear();
+                detectedNotes.clear();
+                displayChord();
+            }
+        }
+
+        // Toggle Chord Visibility (SHOW/HIDE HINTS) - MAIN FUNCTION
+        window.toggleChordVisibility = function() {
+            showChordHints = !showChordHints;
+            const btn = document.getElementById('virtual-hints-button');
+            const label = btn.querySelector('.virtual-control-label');
+            const notesDisplay = document.getElementById('virtual-chord-notes');
+            const sheetMusicEl = document.getElementById('virtual-sheet-music');
+
+            if (showChordHints) {
+                if (label) label.textContent = 'Hide Hints';
+
+                // Show chord notes text
+                notesDisplay.style.display = 'block';
+
+                // Show red highlights on keys/zones
+                updateGestureZones();
+                highlightPianoKeys();
+            } else {
+                if (label) label.textContent = 'Show Hints';
+
+                // Hide chord notes text
+                notesDisplay.style.display = 'none';
+
+                // Remove all highlights
+                document.querySelectorAll('.gesture-zone').forEach(zone => {
+                    zone.classList.remove('highlight');
+                });
+                document.querySelectorAll('.piano-key').forEach(key => {
+                    key.classList.remove('highlight');
+                });
+            }
+
+            // Always show sheet music and generate it with current chord
+            sheetMusicEl.style.display = 'block';
+            sheetMusicEl.style.transform = 'scale(0.9)';
+            if (currentChord) {
+                generateSheetMusic(currentChord.notes, 'virtual-notation-svg');
+            }
+        }
+
+        // Show Help (Works for both sections) - MAIN FUNCTION
+        window.showHelp = function() {
+            const helpText = currentPage === 'practice'
+                ? 'Play the displayed chord on your piano. Use the microphone to detect notes.'
+                : 'Tap the highlighted zones or keys to play the chord. Match the displayed chord before time runs out!';
+            showToast(helpText, 'subtle', 5000);
+        }
+
+        // ========================================
+        // END OF BUTTON FUNCTIONS
+        // ========================================
+
+        // Initialize on Load
+        window.addEventListener('load', () => {
+            // Initialize DOM cache for performance
+            DOM.init();
+
+            loadSettings();
+            initPianoKeys();
+
+            // Generate initial chord for virtual piano
+            currentChord = generateChord();
+            updateGestureZones();
+            updateVirtualPianoChord();
+
+            // Always show sheet music on initialization
+            document.getElementById('virtual-sheet-music').style.display = 'block';
+            generateSheetMusic(currentChord.notes, 'virtual-notation-svg');
+
+            // Initialize timer circles properly (using cached DOM elements)
+            const radius = 54;
+            const circumference = 2 * Math.PI * radius;
+
+            // Practice timer initialization
+            if (DOM.practiceTimerProgress) {
+                DOM.practiceTimerProgress.style.strokeDasharray = circumference;
+                DOM.practiceTimerProgress.style.strokeDashoffset = 0;
+            }
+
+            // Virtual timer initialization
+            if (DOM.virtualTimerProgress) {
+                DOM.virtualTimerProgress.style.strokeDasharray = circumference;
+                DOM.virtualTimerProgress.style.strokeDashoffset = 0;
+            }
+
+            // Request persistent storage
+            if (navigator.storage && navigator.storage.persist) {
+                navigator.storage.persist();
+            }
+
+            // Render initial stats for both sections
+            updateStats();
+        });
+
+        // Prevent zoom on double tap (iOS)
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (event) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Handle orientation change
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100);
+        });
+
+        // iOS specific fixes
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            document.body.addEventListener('touchmove', (e) => {
+                if (e.target.closest('.piano-keys')) return;
+                e.preventDefault();
+            }, { passive: false });
+            
+            const setVH = () => {
+                document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+            };
+            setVH();
+            window.addEventListener('resize', setVH);
+        }
+    </script>
+    <div class="help-overlay" id="help-overlay">
+        <div class="help-content">
+            <span class="help-close" onclick="closeHelp()">×</span>
+            <h2>How to Use Chord Master Professional</h2>
+            
+            <div class="help-section">
+                <h3>Practice Mode</h3>
+                <p>1. Press "Start" to begin your practice session</p>
+                <p>2. Play the displayed chord on your piano</p>
+                <p>3. The app will detect if you played it correctly</p>
+                <p>4. Green border = Correct, Red border = Try again</p>
+                <p>5. Track your progress with streaks and accuracy</p>
+                <p>6. Use "Restart" to begin a new session with fresh stats</p>
+            </div>
+
+            <div class="help-section">
+                <h3>Virtual Piano Mode</h3>
+                <p><strong>Easy Touch Mode:</strong> Large buttons showing only the notes you need for the current chord. Perfect for practice without a physical piano.</p>
+                <p><strong>Piano Keys Mode:</strong> Traditional piano layout with highlighted keys for the current chord.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Loading Indicator -->
+    <div class="loading" id="loading">Loading</div>
+
+    <script>
+        // Metronome removed
+    </script>
+
+    <!-- Audio Waveform Visualizer (Fixed Position) -->
+    <div class="waveform-container" id="waveform-container">
+        <div class="waveform-header">
+            <div class="waveform-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+                Sound Wave
+            </div>
+            <div class="waveform-status" id="waveform-status">
+                <span class="pulse-dot"></span>
+                <span id="waveform-status-text">Listening</span>
+            </div>
+        </div>
+        <canvas id="waveform-canvas" class="waveform-canvas"></canvas>
+        <div class="waveform-info">
+            <span id="wave-amplitude">Amplitude: 0%</span>
+            <span id="wave-frequency">λ = <span id="wavelength">--</span></span>
+            <span id="wave-energy">Energy: Low</span>
+        </div>
+    </div>
+
+    <!-- Dedication -->
+    <div style="text-align: center; padding: 30px 20px; margin-top: 50px; border-top: 1px solid rgba(192, 57, 43, 0.1);">
+        <p style="font-family: 'EB Garamond', serif; font-style: italic; color: var(--text-secondary); font-size: 14px; line-height: 1.6; max-width: 600px; margin: 0 auto;">
+            To my Uncle Joe, thank you for pushing me to think like an engineer<br>
+            and inspiring me to constantly learn and "do", not just "say".<br>
+            <span style="color: var(--accent); font-weight: 600;">Love, Matt</span>
+        </p>
+    </div>
+</body>
+</html>
