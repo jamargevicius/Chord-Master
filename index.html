@@ -3599,64 +3599,7 @@
                 updateNoteMarkers(currentChord.notes);
             }
 
-            // Add audio level indicator
-            createAudioLevelMeter();
             drawFrequencySpectrum();
-        }
-
-        // Create Audio Level Meter
-        function createAudioLevelMeter() {
-            const visualizer = document.getElementById('frequency-visualizer');
-            if (!visualizer) return;
-
-            // Remove existing meter if present
-            const existingMeter = document.getElementById('audio-level-meter');
-            if (existingMeter) existingMeter.remove();
-
-            audioLevelMeter = document.createElement('div');
-            audioLevelMeter.id = 'audio-level-meter';
-            audioLevelMeter.style.cssText = `
-                position: absolute;
-                top: 10px;
-                left: 10px;
-                width: 150px;
-                height: 20px;
-                background: rgba(0,0,0,0.1);
-                border-radius: 10px;
-                overflow: hidden;
-                border: 1px solid var(--border);
-            `;
-
-            const levelBar = document.createElement('div');
-            levelBar.id = 'audio-level-bar';
-            levelBar.style.cssText = `
-                height: 100%;
-                width: 0%;
-                background: linear-gradient(90deg, #27ae60, #f39c12, #e74c3c);
-                transition: width 0.1s ease;
-                border-radius: 10px;
-            `;
-
-            const levelText = document.createElement('div');
-            levelText.id = 'audio-level-text';
-            levelText.style.cssText = `
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 11px;
-                color: var(--text-primary);
-                font-weight: 600;
-            `;
-            levelText.textContent = 'Audio Level';
-
-            audioLevelMeter.appendChild(levelBar);
-            audioLevelMeter.appendChild(levelText);
-            visualizer.appendChild(audioLevelMeter);
         }
 
         // Stop Frequency Visualization
@@ -3671,7 +3614,7 @@
                 visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
             }
 
-            // Remove audio level meter
+            // Ensure any stray overlay meters are removed
             const meter = document.getElementById('audio-level-meter');
             if (meter) meter.remove();
         }
@@ -3794,10 +3737,8 @@
             visualizationAnimationId = requestAnimationFrame(drawFrequencySpectrum);
         }
 
-        // Update Audio Level Display
+        // Update Audio Level Display (single source of truth: input-level-meter)
         function updateAudioLevel(dataArray) {
-            if (!audioLevelMeter) return;
-
             // Calculate average level
             let sum = 0;
             let max = 0;
@@ -3808,27 +3749,12 @@
             const average = sum / dataArray.length;
             const percentage = Math.min(100, (max / 255) * 100);
 
-            const levelBar = document.getElementById('audio-level-bar');
-            const levelText = document.getElementById('audio-level-text');
-
-            if (levelBar) {
-                levelBar.style.width = percentage + '%';
-            }
-
             // Practice page input level meter
             const inputMeter = document.getElementById('input-level-meter');
             const inputFill = document.getElementById('input-level-fill');
             if (inputMeter && inputFill) {
                 inputMeter.style.display = 'flex';
                 inputFill.style.setProperty('--level', Math.round(percentage) + '%');
-            }
-
-            if (levelText) {
-                if (percentage > 5) {
-                    levelText.textContent = `Level: ${Math.round(percentage)}%`;
-                } else {
-                    levelText.textContent = 'No Input';
-                }
             }
         }
 
