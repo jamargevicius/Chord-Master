@@ -49,7 +49,7 @@ Dev guidance
   - Open the `https://<your-user>.github.io/<repo>/` URL on your iPhone in Safari.
 - **Install:** Safari → Share → Add to Home Screen → Add.
 - **Permissions:** First launch requires a tap before audio starts (iOS policy). When you toggle the mic, iOS prompts for microphone access.
-- **Offline:** Fully offline including first run. Fonts (Inter, EB Garamond) and KaTeX are bundled locally and precached by `sw.js`. No external network is required at any time.
+- **Offline:** Fully offline after install/first visit. Fonts (Inter, EB Garamond) and KaTeX are bundled locally and precached by `sw.js`, so no external CDNs are required. Once visited/installed online once, the app runs without network.
 - **Icon (optional):** Add a `180x180` PNG and reference it with `<link rel="apple-touch-icon" href="/apple-touch-icon.png">` to improve the home‑screen icon.
 
 **Option B — Native iOS App (Capacitor + Xcode)**
