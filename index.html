@@ -21,7 +21,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     
     <!-- PWA Manifest -->
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQ2hvcmQgTWFzdGVyIFByb2Zlc3Npb25hbCIsInNob3J0X25hbWUiOiJDaG9yZE1hc3RlciIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwic3RhcnRfdXJsIjoiLiIsImJhY2tncm91bmRfY29sb3IiOiIjMWExYTJlIiwidGhlbWVfY29sb3IiOiIjMWExYTJlIiwib3JpZW50YXRpb24iOiJwb3J0cmFpdCJ9">
+    <link rel="manifest" href="manifest.webmanifest">
     <!-- iOS Home Screen Icon -->
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     
@@ -4159,30 +4159,11 @@
             }
         }
 
-        // Service Worker for PWA
+        // Service Worker for PWA (offline-capable)
         if ('serviceWorker' in navigator) {
-            const swCode = `
-                self.addEventListener('install', event => {
-                    self.skipWaiting();
-                });
-                
-                self.addEventListener('activate', event => {
-                    event.waitUntil(clients.claim());
-                });
-                
-                self.addEventListener('fetch', event => {
-                    event.respondWith(
-                        fetch(event.request).catch(() => {
-                            return new Response('Offline mode');
-                        })
-                    );
-                });
-            `;
-            
-            const blob = new Blob([swCode], { type: 'application/javascript' });
-            const swUrl = URL.createObjectURL(blob);
-            
-            navigator.serviceWorker.register(swUrl).catch(console.error);
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js', { scope: './' }).catch(console.error);
+            });
         }
 
         // ========================================
