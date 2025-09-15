@@ -3588,11 +3588,12 @@
 
             visualizerCtx = visualizerCanvas.getContext('2d');
 
-            // Set canvas size properly
+            // Set canvas size properly (stable sizing with DPR)
             const rect = visualizerCanvas.getBoundingClientRect();
             const dpr = window.devicePixelRatio || 1;
-            visualizerCanvas.width = rect.width * dpr;
-            visualizerCanvas.height = rect.height * dpr;
+            visualizerCanvas.width = Math.round(rect.width * dpr);
+            visualizerCanvas.height = Math.round(rect.height * dpr);
+            visualizerCtx.setTransform(1, 0, 0, 1, 0, 0);
             visualizerCtx.scale(dpr, dpr);
 
             if (currentChord) {
@@ -3656,8 +3657,17 @@
             // Update audio level meter
             updateAudioLevel(dataArray);
 
-            // Get actual canvas dimensions
+            // Get actual canvas dimensions and ensure internal pixels match
             const rect = visualizerCanvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            const targetW = Math.round(rect.width * dpr);
+            const targetH = Math.round(rect.height * dpr);
+            if (visualizerCanvas.width !== targetW || visualizerCanvas.height !== targetH) {
+                visualizerCanvas.width = targetW;
+                visualizerCanvas.height = targetH;
+                visualizerCtx.setTransform(1, 0, 0, 1, 0, 0);
+                visualizerCtx.scale(dpr, dpr);
+            }
             const width = rect.width;
             const height = rect.height;
             visualizerCtx.clearRect(0, 0, width, height);
@@ -3676,6 +3686,9 @@
             const minBin = Math.floor(minFreq / nyquist * bufferLength);
             const maxBin = Math.ceil(maxFreq / nyquist * bufferLength);
             const binRange = maxBin - minBin;
+
+            // Draw gridlines and frequency ticks for a physics-lab look
+            drawSpectrumGrid(minFreq, maxFreq, width, height);
 
             // Draw frequency bars
             const barWidth = width / binRange;
@@ -3735,6 +3748,42 @@
             }
 
             visualizationAnimationId = requestAnimationFrame(drawFrequencySpectrum);
+        }
+
+        // Draw subtle gridlines and labeled frequency ticks
+        function drawSpectrumGrid(minFreq, maxFreq, width, height) {
+            visualizerCtx.save();
+            // Horizontal gridlines (20%, 40%, 60%, 80%)
+            visualizerCtx.strokeStyle = 'rgba(52, 73, 94, 0.10)';
+            visualizerCtx.lineWidth = 1;
+            for (let i = 1; i <= 4; i++) {
+                const y = Math.round((height * i) / 5);
+                visualizerCtx.beginPath();
+                visualizerCtx.moveTo(0, y);
+                visualizerCtx.lineTo(width, y);
+                visualizerCtx.stroke();
+            }
+
+            // Frequency ticks (log-ish spacing)
+            const ticks = [50, 100, 200, 400, 800, 1600, 2000];
+            visualizerCtx.fillStyle = 'rgba(52, 73, 94, 0.6)';
+            visualizerCtx.font = '11px Inter, sans-serif';
+            visualizerCtx.textAlign = 'center';
+            visualizerCtx.textBaseline = 'bottom';
+            ticks.forEach(freq => {
+                if (freq < minFreq || freq > maxFreq) return;
+                const x = ((freq - minFreq) / (maxFreq - minFreq)) * width;
+                visualizerCtx.setLineDash([3, 4]);
+                visualizerCtx.strokeStyle = 'rgba(52, 73, 94, 0.12)';
+                visualizerCtx.beginPath();
+                visualizerCtx.moveTo(x, 0);
+                visualizerCtx.lineTo(x, height);
+                visualizerCtx.stroke();
+                visualizerCtx.setLineDash([]);
+                const label = freq >= 1000 ? `${Math.round(freq / 100) / 10} kHz` : `${freq} Hz`;
+                visualizerCtx.fillText(label, x, height - 4);
+            });
+            visualizerCtx.restore();
         }
 
         // Update Audio Level Display (single source of truth: input-level-meter)
