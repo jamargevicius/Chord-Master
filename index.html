@@ -10,15 +10,13 @@
     <meta name="theme-color" content="#1a1a2e">
     <title>Chord Master Professional - Piano Practice Platform</title>
     
-    <!-- Google Fonts for Garamond -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Local bundled Google Fonts (offline) -->
+    <link rel="stylesheet" href="assets/fonts/fonts.css">
     
-    <!-- KaTeX for Mathematical Formulas -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <!-- Local KaTeX (offline) -->
+    <link rel="stylesheet" href="assets/katex/katex.min.css">
+    <script defer src="assets/katex/katex.min.js"></script>
+    <script defer src="assets/katex/auto-render.min.js"></script>
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.webmanifest">
@@ -1997,7 +1995,7 @@
 
                 <!-- Traditional Piano Keys -->
                 <div class="traditional-piano" id="traditional-piano">
-                    <p class="piano-instruction">Tap the highlighted keys to play the chord</p>
+                    <!-- instruction removed by request -->
                     <div class="piano-keys" id="piano-keys">
                         <!-- Will be populated dynamically -->
                     </div>
