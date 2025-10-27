@@ -1,10 +1,11 @@
-/* Chord Master PWA Service Worker */
-const SW_VERSION = 'cm-pwa-v2-2025-09-15';
+/* Piano Practice PWA Service Worker - v3 Clean Slate */
+const SW_VERSION = 'cm-pwa-v3.0.0-clean-slate';
 const APP_SHELL_CACHE = `app-shell-${SW_VERSION}`;
 const RUNTIME_CACHE = `runtime-${SW_VERSION}`;
 const FONT_CACHE = `font-${SW_VERSION}`;
+const AUDIO_CACHE = `audio-${SW_VERSION}`;
 
-// Known core files to precache (relative to scope)
+// Core files to precache (relative to scope)
 const APP_SHELL = [
   './',
   './index.html',
@@ -12,12 +13,11 @@ const APP_SHELL = [
   './apple-touch-icon.png',
   './icon-192.png',
   './icon-512.png',
-  // Local CSS/JS assets
+  // Core CSS/JS assets
   './assets/fonts/fonts.css',
-  './assets/katex/katex.min.css',
-  './assets/katex/katex.min.js',
-  './assets/katex/auto-render.min.js',
-  // Local Google Fonts (woff2)
+  './assets/css/main.css',
+  './assets/js/app.js',
+  // EB Garamond Fonts (woff2 only)
   './assets/fonts/SlGUmQSNjdsmc35JDF1K5GR1SDk_YAPI.woff2',
   './assets/fonts/SlGUmQSNjdsmc35JDF1K5GR2SDk_YAPIlWk.woff2',
   './assets/fonts/SlGUmQSNjdsmc35JDF1K5GR4SDk_YAPIlWk.woff2',
@@ -32,67 +32,6 @@ const APP_SHELL = [
   './assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2',
   './assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2',
   './assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2',
-  // Local KaTeX fonts
-  './assets/katex/fonts/KaTeX_AMS-Regular.ttf',
-  './assets/katex/fonts/KaTeX_AMS-Regular.woff',
-  './assets/katex/fonts/KaTeX_AMS-Regular.woff2',
-  './assets/katex/fonts/KaTeX_Caligraphic-Bold.ttf',
-  './assets/katex/fonts/KaTeX_Caligraphic-Bold.woff',
-  './assets/katex/fonts/KaTeX_Caligraphic-Bold.woff2',
-  './assets/katex/fonts/KaTeX_Caligraphic-Regular.ttf',
-  './assets/katex/fonts/KaTeX_Caligraphic-Regular.woff',
-  './assets/katex/fonts/KaTeX_Caligraphic-Regular.woff2',
-  './assets/katex/fonts/KaTeX_Fraktur-Bold.ttf',
-  './assets/katex/fonts/KaTeX_Fraktur-Bold.woff',
-  './assets/katex/fonts/KaTeX_Fraktur-Bold.woff2',
-  './assets/katex/fonts/KaTeX_Fraktur-Regular.ttf',
-  './assets/katex/fonts/KaTeX_Fraktur-Regular.woff',
-  './assets/katex/fonts/KaTeX_Fraktur-Regular.woff2',
-  './assets/katex/fonts/KaTeX_Main-Bold.ttf',
-  './assets/katex/fonts/KaTeX_Main-Bold.woff',
-  './assets/katex/fonts/KaTeX_Main-Bold.woff2',
-  './assets/katex/fonts/KaTeX_Main-BoldItalic.ttf',
-  './assets/katex/fonts/KaTeX_Main-BoldItalic.woff',
-  './assets/katex/fonts/KaTeX_Main-BoldItalic.woff2',
-  './assets/katex/fonts/KaTeX_Main-Italic.ttf',
-  './assets/katex/fonts/KaTeX_Main-Italic.woff',
-  './assets/katex/fonts/KaTeX_Main-Italic.woff2',
-  './assets/katex/fonts/KaTeX_Main-Regular.ttf',
-  './assets/katex/fonts/KaTeX_Main-Regular.woff',
-  './assets/katex/fonts/KaTeX_Main-Regular.woff2',
-  './assets/katex/fonts/KaTeX_Math-BoldItalic.ttf',
-  './assets/katex/fonts/KaTeX_Math-BoldItalic.woff',
-  './assets/katex/fonts/KaTeX_Math-BoldItalic.woff2',
-  './assets/katex/fonts/KaTeX_Math-Italic.ttf',
-  './assets/katex/fonts/KaTeX_Math-Italic.woff',
-  './assets/katex/fonts/KaTeX_Math-Italic.woff2',
-  './assets/katex/fonts/KaTeX_SansSerif-Bold.ttf',
-  './assets/katex/fonts/KaTeX_SansSerif-Bold.woff',
-  './assets/katex/fonts/KaTeX_SansSerif-Bold.woff2',
-  './assets/katex/fonts/KaTeX_SansSerif-Italic.ttf',
-  './assets/katex/fonts/KaTeX_SansSerif-Italic.woff',
-  './assets/katex/fonts/KaTeX_SansSerif-Italic.woff2',
-  './assets/katex/fonts/KaTeX_SansSerif-Regular.ttf',
-  './assets/katex/fonts/KaTeX_SansSerif-Regular.woff',
-  './assets/katex/fonts/KaTeX_SansSerif-Regular.woff2',
-  './assets/katex/fonts/KaTeX_Script-Regular.ttf',
-  './assets/katex/fonts/KaTeX_Script-Regular.woff',
-  './assets/katex/fonts/KaTeX_Script-Regular.woff2',
-  './assets/katex/fonts/KaTeX_Size1-Regular.ttf',
-  './assets/katex/fonts/KaTeX_Size1-Regular.woff',
-  './assets/katex/fonts/KaTeX_Size1-Regular.woff2',
-  './assets/katex/fonts/KaTeX_Size2-Regular.ttf',
-  './assets/katex/fonts/KaTeX_Size2-Regular.woff',
-  './assets/katex/fonts/KaTeX_Size2-Regular.woff2',
-  './assets/katex/fonts/KaTeX_Size3-Regular.ttf',
-  './assets/katex/fonts/KaTeX_Size3-Regular.woff',
-  './assets/katex/fonts/KaTeX_Size3-Regular.woff2',
-  './assets/katex/fonts/KaTeX_Size4-Regular.ttf',
-  './assets/katex/fonts/KaTeX_Size4-Regular.woff',
-  './assets/katex/fonts/KaTeX_Size4-Regular.woff2',
-  './assets/katex/fonts/KaTeX_Typewriter-Regular.ttf',
-  './assets/katex/fonts/KaTeX_Typewriter-Regular.woff',
-  './assets/katex/fonts/KaTeX_Typewriter-Regular.woff2',
 ];
 
 self.addEventListener('install', (event) => {
@@ -108,7 +47,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     // Clean old caches
     const names = await caches.keys();
-    await Promise.all(names.filter((n) => ![APP_SHELL_CACHE, RUNTIME_CACHE, FONT_CACHE].includes(n)).map((n) => caches.delete(n)));
+    await Promise.all(names.filter((n) => ![APP_SHELL_CACHE, RUNTIME_CACHE, FONT_CACHE, AUDIO_CACHE].includes(n)).map((n) => caches.delete(n)));
     await self.clients.claim();
   })());
 });
@@ -159,6 +98,9 @@ self.addEventListener('fetch', (event) => {
       event.respondWith(cacheFirst(request, APP_SHELL_CACHE));
     } else if (['style', 'script', 'image', 'font'].includes(request.destination)) {
       event.respondWith(cacheFirst(request, RUNTIME_CACHE));
+    } else if (url.pathname.includes('/audio/piano/')) {
+      // Cache audio files
+      event.respondWith(cacheFirst(request, AUDIO_CACHE));
     }
     return;
   }

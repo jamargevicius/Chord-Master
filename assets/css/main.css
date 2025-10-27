@@ -1,0 +1,613 @@
+/* ============================================
+   CSS CUSTOM PROPERTIES (Variables)
+   ============================================ */
+:root {
+    --primary: #000000;
+    --secondary: #333333;
+    --accent: #4a5568;
+    --success: #2E7D32;
+    --warning: #F57C00;
+    --error: #8B0000;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666666;
+    --bg-main: #ffffff;
+    --bg-card: #f9f9f9;
+    --border: #e0e0e0;
+    --safe-area-top: env(safe-area-inset-top);
+    --safe-area-bottom: env(safe-area-inset-bottom);
+}
+
+/* ============================================
+   RESET & BASE STYLES
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'EB Garamond', 'Garamond', serif;
+    background: #ffffff;
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding-top: var(--safe-area-top);
+    padding-bottom: var(--safe-area-bottom);
+    overflow-x: hidden;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+h1, h2, h3 {
+    font-family: 'EB Garamond', 'Garamond', serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* ============================================
+   LAYOUT COMPONENTS
+   ============================================ */
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================
+   SPLASH PAGE
+   ============================================ */
+.splash-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.splash-container.active {
+    display: flex;
+}
+
+.splash-content {
+    text-align: center;
+    padding: 40px;
+}
+
+.splash-title {
+    font-size: 48px;
+    font-weight: 300;
+    color: #000;
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+}
+
+.piano-visual {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 60px;
+    margin: 40px auto;
+    position: relative;
+}
+
+.piano-key {
+    border: 1px solid #000;
+    transition: transform 0.1s;
+}
+
+.piano-key.white-key {
+    width: 14px;
+    height: 60px;
+    background: white;
+    margin: 0 1px;
+}
+
+.piano-key.black-key {
+    width: 10px;
+    height: 40px;
+    background: #000;
+    margin: 0 -6px;
+    z-index: 1;
+    position: relative;
+}
+
+.enter-button {
+    background: #000;
+    color: white;
+    border: none;
+    padding: 15px 50px;
+    font-size: 18px;
+    font-family: 'EB Garamond', serif;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.enter-button:hover {
+    background: #333;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 15px 20px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+}
+
+.platform-title {
+    font-size: 32px;
+    margin: 0;
+    color: #000;
+    font-weight: 300;
+    letter-spacing: 1px;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    transition: opacity 0.3s;
+}
+
+.icon-button:hover {
+    opacity: 0.6;
+}
+
+.icon-button svg {
+    width: 24px;
+    height: 24px;
+    fill: #000;
+}
+
+/* ============================================
+   PRACTICE PAGE
+   ============================================ */
+.page {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+    flex: 1;
+}
+
+.page.active {
+    display: flex;
+}
+
+/* Control Panel */
+.control-panel {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.control-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 2px solid #000;
+    padding: 20px 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'EB Garamond', serif;
+    font-size: 16px;
+    min-width: 120px;
+}
+
+.control-button:hover {
+    background: #000;
+    color: white;
+}
+
+.control-button:hover svg {
+    fill: white;
+}
+
+.control-button svg {
+    width: 32px;
+    height: 32px;
+    fill: #000;
+    transition: fill 0.3s;
+}
+
+.control-button span {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Chord Display */
+.chord-display {
+    text-align: center;
+    padding: 80px 60px;
+    background: white;
+    border: 2px solid var(--border);
+    min-width: 400px;
+    max-width: 700px;
+    margin: 40px auto;
+    transition: border-color 0.3s;
+}
+
+.chord-name {
+    font-size: 96px;
+    font-weight: 300;
+    color: #000;
+    margin-bottom: 20px;
+    letter-spacing: 3px;
+}
+
+.chord-type {
+    font-size: 32px;
+    color: var(--text-secondary);
+    font-style: italic;
+    font-weight: 300;
+    margin-top: 10px;
+}
+
+/* ============================================
+   MODALS & OVERLAYS
+   ============================================ */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 30px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    font-size: 28px;
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+    color: #000;
+}
+
+/* Settings Container */
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.setting-group {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+}
+
+.setting-group:last-child {
+    border-bottom: none;
+}
+
+.setting-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: var(--text-primary);
+}
+
+.setting-label svg {
+    width: 20px;
+    height: 20px;
+    stroke: #000;
+    stroke-width: 2;
+}
+
+.setting-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.setting-option {
+    padding: 12px 20px;
+    border: 2px solid var(--border);
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    font-family: 'EB Garamond', serif;
+    text-align: center;
+    min-width: 100px;
+}
+
+.setting-option:hover {
+    border-color: #000;
+}
+
+.setting-option.active,
+.setting-option.selected {
+    background: #000;
+    color: white;
+    border-color: #000;
+}
+
+/* Slider Container */
+.slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.duration-slider {
+    width: 100%;
+    height: 6px;
+    background: var(--border);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.duration-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #000;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.duration-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #000;
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+    transition: all 0.3s;
+}
+
+.duration-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.duration-slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+}
+
+.slider-value {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ============================================
+   TOAST NOTIFICATIONS
+   ============================================ */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #000;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 0;
+    font-size: 16px;
+    font-family: 'EB Garamond', serif;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+.toast.success {
+    background-color: var(--success);
+}
+
+.toast.warning {
+    background-color: var(--warning);
+}
+
+.toast.error {
+    background-color: var(--error);
+}
+
+.toast.subtle {
+    background-color: #666;
+}
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+.hidden {
+    display: none !important;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 768px) {
+    .splash-title {
+        font-size: 36px;
+    }
+
+    .platform-title {
+        font-size: 24px;
+    }
+
+    .chord-name {
+        font-size: 72px;
+    }
+
+    .chord-type {
+        font-size: 24px;
+    }
+
+    .control-panel {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        max-width: 300px;
+        margin: 20px auto;
+    }
+
+    .control-button {
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+        padding: 15px 20px;
+    }
+
+    .control-button svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .chord-display {
+        padding: 60px 30px;
+        min-width: auto;
+        width: 100%;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+        margin: 2% auto;
+    }
+
+    .setting-option {
+        min-width: 80px;
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 12px 15px;
+    }
+
+    .splash-title {
+        font-size: 28px;
+    }
+
+    .platform-title {
+        font-size: 20px;
+    }
+
+    .chord-name {
+        font-size: 56px;
+    }
+
+    .chord-type {
+        font-size: 20px;
+    }
+
+    .control-button {
+        padding: 12px 15px;
+    }
+
+    .control-button span {
+        font-size: 14px;
+    }
+
+    .icon-button {
+        padding: 6px;
+    }
+
+    .icon-button svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+@media (max-width: 375px) {
+    .chord-name {
+        font-size: 48px;
+    }
+
+    .chord-type {
+        font-size: 18px;
+    }
+
+    .chord-display {
+        padding: 40px 20px;
+    }
+}
+
+/* ============================================
+   IOS SPECIFIC FIXES
+   ============================================ */
+@supports (-webkit-touch-callout: none) {
+    body {
+        height: calc(var(--vh, 1vh) * 100);
+    }
+}
