@@ -316,11 +316,18 @@ function closeSettings() {
 }
 
 
-// Update chord duration from slider
-function updateChordDuration(value) {
-    chordDuration = parseInt(value);
-    const sliderValueEl = document.getElementById('slider-value');
-    sliderValueEl.textContent = `${value} second${value === '1' ? '' : 's'}`;
+// Set chord duration from button selection
+function setChordDuration(seconds) {
+    chordDuration = seconds;
+
+    // Update button states
+    document.querySelectorAll('.duration-option').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    const selectedBtn = document.querySelector(`.duration-option[data-duration="${seconds}"]`);
+    if (selectedBtn) {
+        selectedBtn.classList.add('active');
+    }
 
     // If currently practicing, restart the timer with new duration
     if (isPracticing) {
@@ -363,10 +370,14 @@ function loadSettings() {
             // Restore chord duration
             if (settings.chordDuration) {
                 chordDuration = settings.chordDuration;
-                const slider = document.getElementById('duration-slider');
-                const sliderValue = document.getElementById('slider-value');
-                if (slider) slider.value = chordDuration;
-                if (sliderValue) sliderValue.textContent = `${chordDuration} second${chordDuration === 1 ? '' : 's'}`;
+                // Update button states
+                document.querySelectorAll('.duration-option').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                const selectedBtn = document.querySelector(`.duration-option[data-duration="${chordDuration}"]`);
+                if (selectedBtn) {
+                    selectedBtn.classList.add('active');
+                }
             }
 
             // Restore chord type selections
@@ -453,7 +464,7 @@ window.returnToSplash = returnToSplash;
 window.togglePractice = togglePractice;
 window.openSettings = openSettings;
 window.closeSettings = closeSettings;
-window.updateChordDuration = updateChordDuration;
+window.setChordDuration = setChordDuration;
 window.toggleChordType = toggleChordType;
 
 // ============================================

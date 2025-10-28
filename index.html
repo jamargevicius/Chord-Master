@@ -91,9 +91,17 @@
                         </svg>
                         <span>Chord Duration</span>
                     </div>
-                    <div class="slider-container">
-                        <input type="range" min="1" max="10" value="5" class="duration-slider" id="duration-slider" oninput="updateChordDuration(this.value)">
-                        <div class="slider-value" id="slider-value">5 seconds</div>
+                    <div class="setting-options duration-buttons">
+                        <button class="setting-option duration-option" data-duration="1" onclick="setChordDuration(1)">1s</button>
+                        <button class="setting-option duration-option" data-duration="2" onclick="setChordDuration(2)">2s</button>
+                        <button class="setting-option duration-option" data-duration="3" onclick="setChordDuration(3)">3s</button>
+                        <button class="setting-option duration-option" data-duration="4" onclick="setChordDuration(4)">4s</button>
+                        <button class="setting-option duration-option active" data-duration="5" onclick="setChordDuration(5)">5s</button>
+                        <button class="setting-option duration-option" data-duration="6" onclick="setChordDuration(6)">6s</button>
+                        <button class="setting-option duration-option" data-duration="7" onclick="setChordDuration(7)">7s</button>
+                        <button class="setting-option duration-option" data-duration="8" onclick="setChordDuration(8)">8s</button>
+                        <button class="setting-option duration-option" data-duration="9" onclick="setChordDuration(9)">9s</button>
+                        <button class="setting-option duration-option" data-duration="10" onclick="setChordDuration(10)">10s</button>
                     </div>
                 </div>
 
