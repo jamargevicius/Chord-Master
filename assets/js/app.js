@@ -3,7 +3,7 @@
 // ============================================
 let currentChord = null;
 let isPracticing = false;
-let chordDuration = 5; // seconds
+let chordDuration = 4; // seconds (default)
 let advanceTimer = null;
 
 // ============================================
