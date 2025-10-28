@@ -178,15 +178,17 @@ function generateChord() {
     let inversionType = 'Root Position';
     let finalNotes = selectedChord.notes;
 
-    if (useInversions && selectedChord.category !== 'seventh' && Math.random() > 0.5) {
-        const inversionTypes = ['1st Inversion', '2nd Inversion'];
-        inversionType = inversionTypes[Math.floor(Math.random() * inversionTypes.length)];
+    if (useInversions && selectedChord.category !== 'seventh') {
+        // Randomly pick between all three inversions equally (33% each)
+        const allInversionTypes = ['Root Position', '1st Inversion', '2nd Inversion'];
+        inversionType = allInversionTypes[Math.floor(Math.random() * allInversionTypes.length)];
 
         if (inversionType === '1st Inversion') {
             finalNotes = inversions['1st Inv'](selectedChord.notes);
-        } else {
+        } else if (inversionType === '2nd Inversion') {
             finalNotes = inversions['2nd Inv'](selectedChord.notes);
         }
+        // Root Position uses the original notes (no transformation needed)
     }
 
     return {
