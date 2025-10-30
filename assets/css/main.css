@@ -403,12 +403,17 @@ h1, h2, h3 {
     font-size: 13px;
     width: 50px;
     height: 50px;
+    min-width: 50px;
+    min-height: 50px;
+    max-width: 50px;
+    max-height: 50px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     flex-shrink: 0;
+    box-sizing: border-box;
 }
 
 /* Inversion Buttons */
@@ -544,6 +549,10 @@ h1, h2, h3 {
         font-size: 12px;
         width: 44px;
         height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        max-width: 44px;
+        max-height: 44px;
     }
 
     .inversion-buttons {
