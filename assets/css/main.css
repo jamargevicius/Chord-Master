@@ -394,14 +394,14 @@ h1, h2, h3 {
 .duration-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 5px;
     justify-content: center;
 }
 
 .duration-option {
-    padding: 10px 8px;
-    font-size: 14px;
-    width: 45px;
+    padding: 8px 4px;
+    font-size: 13px;
+    width: 36px;
     text-align: center;
     flex-shrink: 0;
 }
@@ -532,13 +532,13 @@ h1, h2, h3 {
     }
 
     .duration-buttons {
-        gap: 5px;
+        gap: 4px;
     }
 
     .duration-option {
-        padding: 8px 4px;
-        font-size: 13px;
-        width: 40px;
+        padding: 8px 2px;
+        font-size: 12px;
+        width: 32px;
     }
 
     .inversion-buttons {
