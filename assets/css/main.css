@@ -394,12 +394,12 @@ h1, h2, h3 {
 .duration-buttons {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+    gap: 6px;
 }
 
 .duration-option {
-    padding: 12px 8px;
-    font-size: 15px;
+    padding: 10px 4px;
+    font-size: 14px;
     min-width: auto;
     text-align: center;
 }
@@ -531,12 +531,12 @@ h1, h2, h3 {
 
     .duration-buttons {
         grid-template-columns: repeat(5, 1fr);
-        gap: 6px;
+        gap: 4px;
     }
 
     .duration-option {
-        padding: 10px 6px;
-        font-size: 14px;
+        padding: 8px 2px;
+        font-size: 13px;
     }
 
     .inversion-buttons {
