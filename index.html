@@ -143,10 +143,9 @@
                         <span>Chord Positions</span>
                     </div>
                     <div class="setting-options inversion-buttons">
-                        <button class="setting-option inversion-option" data-inversion="root" onclick="setInversionMode('root')">Root</button>
-                        <button class="setting-option inversion-option" data-inversion="first" onclick="setInversionMode('first')">1st Inv</button>
-                        <button class="setting-option inversion-option" data-inversion="second" onclick="setInversionMode('second')">2nd Inv</button>
-                        <button class="setting-option inversion-option active" data-inversion="all" onclick="setInversionMode('all')">All</button>
+                        <button class="setting-option inversion-option rounded-button selected" data-inversion="root" onclick="toggleInversion(this)">Root</button>
+                        <button class="setting-option inversion-option rounded-button selected" data-inversion="first" onclick="toggleInversion(this)">1st Inv</button>
+                        <button class="setting-option inversion-option rounded-button selected" data-inversion="second" onclick="toggleInversion(this)">2nd Inv</button>
                     </div>
                 </div>
             </div>

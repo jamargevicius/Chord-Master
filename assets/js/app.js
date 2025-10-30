@@ -5,7 +5,7 @@ let currentChord = null;
 let isPracticing = false;
 let chordDuration = 4; // seconds (default)
 let advanceTimer = null;
-let inversionMode = 'all'; // 'root', 'first', 'second', or 'all'
+let selectedInversions = ['root', 'first', 'second']; // Array of selected inversions (default: all)
 
 // ============================================
 // CONSTANTS & CONFIGURATION
@@ -202,22 +202,27 @@ function generateChord() {
     // Select a random chord
     const selectedChord = availableChords[Math.floor(Math.random() * availableChords.length)];
 
-    // Apply inversions based on selected mode
+    // Apply inversions based on selected positions
     let inversionType = 'Root Position';
     let finalNotes = selectedChord.notes;
 
     // Only apply inversions to triads (not 7th chords)
-    if (selectedChord.category !== 'seventh') {
-        if (inversionMode === 'all') {
-            // Randomly pick between all three inversions equally (33% each)
-            const allInversionTypes = ['Root Position', '1st Inversion', '2nd Inversion'];
-            inversionType = allInversionTypes[Math.floor(Math.random() * allInversionTypes.length)];
-        } else if (inversionMode === 'root') {
-            inversionType = 'Root Position';
-        } else if (inversionMode === 'first') {
-            inversionType = '1st Inversion';
-        } else if (inversionMode === 'second') {
-            inversionType = '2nd Inversion';
+    if (selectedChord.category !== 'seventh' && selectedInversions.length > 0) {
+        // Build array of available inversions based on user selection
+        const availableInversions = [];
+        if (selectedInversions.includes('root')) {
+            availableInversions.push('Root Position');
+        }
+        if (selectedInversions.includes('first')) {
+            availableInversions.push('1st Inversion');
+        }
+        if (selectedInversions.includes('second')) {
+            availableInversions.push('2nd Inversion');
+        }
+
+        // Randomly pick from available inversions (equal probability)
+        if (availableInversions.length > 0) {
+            inversionType = availableInversions[Math.floor(Math.random() * availableInversions.length)];
         }
 
         // Apply the inversion transformation
@@ -347,17 +352,28 @@ function setChordDuration(seconds) {
     saveSettings();
 }
 
-// Set inversion mode from button selection
-function setInversionMode(mode) {
-    inversionMode = mode;
+// Toggle inversion button selection (multi-select)
+function toggleInversion(element) {
+    const inversion = element.dataset.inversion;
 
-    // Update button states
-    document.querySelectorAll('.inversion-option').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    const selectedBtn = document.querySelector(`.inversion-option[data-inversion="${mode}"]`);
-    if (selectedBtn) {
-        selectedBtn.classList.add('active');
+    // Toggle the selected state
+    element.classList.toggle('selected');
+
+    // Update the selectedInversions array
+    const index = selectedInversions.indexOf(inversion);
+    if (index > -1) {
+        // Remove if already selected
+        selectedInversions.splice(index, 1);
+    } else {
+        // Add if not selected
+        selectedInversions.push(inversion);
+    }
+
+    // Ensure at least one inversion is always selected
+    if (selectedInversions.length === 0) {
+        // Re-select this button if user tries to deselect all
+        element.classList.add('selected');
+        selectedInversions.push(inversion);
     }
 
     saveSettings();
@@ -378,7 +394,7 @@ function saveSettings() {
     try {
         const settings = {
             chordDuration: chordDuration,
-            inversionMode: inversionMode,
+            selectedInversions: selectedInversions,
             chordTypes: Array.from(document.querySelectorAll('[data-chord].selected')).map(el => el.dataset.chord)
         };
         localStorage.setItem('chordMasterSettings', JSON.stringify(settings));
@@ -407,17 +423,18 @@ function loadSettings() {
                 }
             }
 
-            // Restore inversion mode
-            if (settings.inversionMode) {
-                inversionMode = settings.inversionMode;
+            // Restore selected inversions
+            if (settings.selectedInversions && settings.selectedInversions.length > 0) {
+                selectedInversions = settings.selectedInversions;
                 // Update button states
                 document.querySelectorAll('.inversion-option').forEach(btn => {
-                    btn.classList.remove('active');
+                    const inversion = btn.dataset.inversion;
+                    if (selectedInversions.includes(inversion)) {
+                        btn.classList.add('selected');
+                    } else {
+                        btn.classList.remove('selected');
+                    }
                 });
-                const selectedBtn = document.querySelector(`.inversion-option[data-inversion="${inversionMode}"]`);
-                if (selectedBtn) {
-                    selectedBtn.classList.add('active');
-                }
             }
 
             // Restore chord type selections
@@ -505,7 +522,7 @@ window.togglePractice = togglePractice;
 window.openSettings = openSettings;
 window.closeSettings = closeSettings;
 window.setChordDuration = setChordDuration;
-window.setInversionMode = setInversionMode;
+window.toggleInversion = toggleInversion;
 window.toggleChordType = toggleChordType;
 
 // ============================================

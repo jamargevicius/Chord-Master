@@ -406,16 +406,22 @@ h1, h2, h3 {
 
 /* Inversion Buttons */
 .inversion-buttons {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
 }
 
 .inversion-option {
-    padding: 12px 8px;
+    padding: 12px 20px;
     font-size: 15px;
-    min-width: auto;
+    min-width: 90px;
     text-align: center;
+}
+
+/* Rounded Button Style */
+.rounded-button {
+    border-radius: 50px;
+    padding: 12px 24px;
 }
 
 /* ============================================
@@ -534,13 +540,13 @@ h1, h2, h3 {
     }
 
     .inversion-buttons {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 6px;
+        gap: 8px;
     }
 
     .inversion-option {
-        padding: 10px 6px;
+        padding: 10px 16px;
         font-size: 14px;
+        min-width: 75px;
     }
 }
 
