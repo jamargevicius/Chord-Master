@@ -131,9 +131,22 @@
                         <div class="setting-option" data-chord="seventh" onclick="toggleChordType(this)">
                             7th Chords
                         </div>
-                        <div class="setting-option" data-chord="inversions" onclick="toggleChordType(this)">
-                            Inversions
-                        </div>
+                    </div>
+                </div>
+
+                <!-- Inversion Selection -->
+                <div class="setting-group">
+                    <div class="setting-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M3 12h18M3 6h18M3 18h18"/>
+                        </svg>
+                        <span>Chord Positions</span>
+                    </div>
+                    <div class="setting-options inversion-buttons">
+                        <button class="setting-option inversion-option" data-inversion="root" onclick="setInversionMode('root')">Root</button>
+                        <button class="setting-option inversion-option" data-inversion="first" onclick="setInversionMode('first')">1st Inv</button>
+                        <button class="setting-option inversion-option" data-inversion="second" onclick="setInversionMode('second')">2nd Inv</button>
+                        <button class="setting-option inversion-option active" data-inversion="all" onclick="setInversionMode('all')">All</button>
                     </div>
                 </div>
             </div>

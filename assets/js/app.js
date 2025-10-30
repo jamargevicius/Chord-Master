@@ -5,6 +5,7 @@ let currentChord = null;
 let isPracticing = false;
 let chordDuration = 4; // seconds (default)
 let advanceTimer = null;
+let inversionMode = 'all'; // 'root', 'first', 'second', or 'all'
 
 // ============================================
 // CONSTANTS & CONFIGURATION
@@ -129,7 +130,6 @@ function generateChord() {
     const selectedDiminished = document.querySelector('[data-chord="diminished"].selected');
     const selectedAugmented = document.querySelector('[data-chord="augmented"].selected');
     const selectedSeventh = document.querySelector('[data-chord="seventh"].selected');
-    const useInversions = document.querySelector('[data-chord="inversions"].selected');
 
     // Add chords based on selections
     if (selectedMajor) {
@@ -202,15 +202,25 @@ function generateChord() {
     // Select a random chord
     const selectedChord = availableChords[Math.floor(Math.random() * availableChords.length)];
 
-    // Apply inversions if enabled
+    // Apply inversions based on selected mode
     let inversionType = 'Root Position';
     let finalNotes = selectedChord.notes;
 
-    if (useInversions && selectedChord.category !== 'seventh') {
-        // Randomly pick between all three inversions equally (33% each)
-        const allInversionTypes = ['Root Position', '1st Inversion', '2nd Inversion'];
-        inversionType = allInversionTypes[Math.floor(Math.random() * allInversionTypes.length)];
+    // Only apply inversions to triads (not 7th chords)
+    if (selectedChord.category !== 'seventh') {
+        if (inversionMode === 'all') {
+            // Randomly pick between all three inversions equally (33% each)
+            const allInversionTypes = ['Root Position', '1st Inversion', '2nd Inversion'];
+            inversionType = allInversionTypes[Math.floor(Math.random() * allInversionTypes.length)];
+        } else if (inversionMode === 'root') {
+            inversionType = 'Root Position';
+        } else if (inversionMode === 'first') {
+            inversionType = '1st Inversion';
+        } else if (inversionMode === 'second') {
+            inversionType = '2nd Inversion';
+        }
 
+        // Apply the inversion transformation
         if (inversionType === '1st Inversion') {
             finalNotes = inversions['1st Inv'](selectedChord.notes);
         } else if (inversionType === '2nd Inversion') {
@@ -337,6 +347,22 @@ function setChordDuration(seconds) {
     saveSettings();
 }
 
+// Set inversion mode from button selection
+function setInversionMode(mode) {
+    inversionMode = mode;
+
+    // Update button states
+    document.querySelectorAll('.inversion-option').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    const selectedBtn = document.querySelector(`.inversion-option[data-inversion="${mode}"]`);
+    if (selectedBtn) {
+        selectedBtn.classList.add('active');
+    }
+
+    saveSettings();
+}
+
 // Toggle chord type selection
 function toggleChordType(element) {
     element.classList.toggle('selected');
@@ -352,6 +378,7 @@ function saveSettings() {
     try {
         const settings = {
             chordDuration: chordDuration,
+            inversionMode: inversionMode,
             chordTypes: Array.from(document.querySelectorAll('[data-chord].selected')).map(el => el.dataset.chord)
         };
         localStorage.setItem('chordMasterSettings', JSON.stringify(settings));
@@ -375,6 +402,19 @@ function loadSettings() {
                     btn.classList.remove('active');
                 });
                 const selectedBtn = document.querySelector(`.duration-option[data-duration="${chordDuration}"]`);
+                if (selectedBtn) {
+                    selectedBtn.classList.add('active');
+                }
+            }
+
+            // Restore inversion mode
+            if (settings.inversionMode) {
+                inversionMode = settings.inversionMode;
+                // Update button states
+                document.querySelectorAll('.inversion-option').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                const selectedBtn = document.querySelector(`.inversion-option[data-inversion="${inversionMode}"]`);
                 if (selectedBtn) {
                     selectedBtn.classList.add('active');
                 }
@@ -465,6 +505,7 @@ window.togglePractice = togglePractice;
 window.openSettings = openSettings;
 window.closeSettings = closeSettings;
 window.setChordDuration = setChordDuration;
+window.setInversionMode = setInversionMode;
 window.toggleChordType = toggleChordType;
 
 // ============================================

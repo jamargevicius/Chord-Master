@@ -404,6 +404,20 @@ h1, h2, h3 {
     text-align: center;
 }
 
+/* Inversion Buttons */
+.inversion-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.inversion-option {
+    padding: 12px 8px;
+    font-size: 15px;
+    min-width: auto;
+    text-align: center;
+}
+
 /* ============================================
    TOAST NOTIFICATIONS
    ============================================ */
@@ -515,6 +529,16 @@ h1, h2, h3 {
     }
 
     .duration-option {
+        padding: 10px 6px;
+        font-size: 14px;
+    }
+
+    .inversion-buttons {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+    }
+
+    .inversion-option {
         padding: 10px 6px;
         font-size: 14px;
     }
