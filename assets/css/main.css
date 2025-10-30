@@ -392,16 +392,18 @@ h1, h2, h3 {
 
 /* Duration Buttons */
 .duration-buttons {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 6px;
+    justify-content: center;
 }
 
 .duration-option {
-    padding: 10px 4px;
+    padding: 10px 8px;
     font-size: 14px;
-    min-width: auto;
+    width: 45px;
     text-align: center;
+    flex-shrink: 0;
 }
 
 /* Inversion Buttons */
@@ -530,13 +532,13 @@ h1, h2, h3 {
     }
 
     .duration-buttons {
-        grid-template-columns: repeat(5, 1fr);
-        gap: 4px;
+        gap: 5px;
     }
 
     .duration-option {
-        padding: 8px 2px;
+        padding: 8px 4px;
         font-size: 13px;
+        width: 40px;
     }
 
     .inversion-buttons {
