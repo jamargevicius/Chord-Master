@@ -2,6 +2,7 @@
 // GLOBAL STATE
 // ============================================
 let currentChord = null;
+let lastChordKey = null; // Track the last chord to prevent repeats
 let isPracticing = false;
 let chordDuration = 4; // seconds (default)
 let advanceTimer = null;
@@ -171,8 +172,22 @@ function generateChord() {
         });
     }
 
-    // Select a random chord
-    const selectedChord = availableChords[Math.floor(Math.random() * availableChords.length)];
+    // Select a random chord (avoid repeating the last chord)
+    let selectedChord;
+    if (availableChords.length === 1) {
+        // Only one chord available, use it
+        selectedChord = availableChords[0];
+    } else {
+        // Filter out the last chord if possible
+        let filteredChords = availableChords.filter(chord => chord.key !== lastChordKey);
+
+        // If all chords were filtered (shouldn't happen), use all chords
+        if (filteredChords.length === 0) {
+            filteredChords = availableChords;
+        }
+
+        selectedChord = filteredChords[Math.floor(Math.random() * filteredChords.length)];
+    }
 
     // Apply inversions based on selected positions
     let inversionType = 'Root Position';
@@ -205,6 +220,9 @@ function generateChord() {
         }
         // Root Position uses the original notes (no transformation needed)
     }
+
+    // Store the chord key to prevent repeats
+    lastChordKey = selectedChord.key;
 
     return {
         key: selectedChord.key,
