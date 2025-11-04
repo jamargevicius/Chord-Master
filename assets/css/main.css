@@ -547,6 +547,12 @@ h1, h2, h3 {
         font-size: 13px;
     }
 
+    .chord-types-grid .setting-option {
+        min-width: 0;
+        padding: 8px 4px;
+        font-size: 11px;
+    }
+
     .duration-buttons {
         gap: 6px;
     }
@@ -627,6 +633,15 @@ h1, h2, h3 {
 
     .chord-display {
         padding: 40px 20px;
+    }
+
+    .chord-types-grid .setting-option {
+        padding: 6px 2px;
+        font-size: 10px;
+    }
+
+    .chord-types-grid {
+        gap: 6px;
     }
 }
 
