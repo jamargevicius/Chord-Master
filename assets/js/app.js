@@ -79,6 +79,34 @@ const chordDefinitions = {
         'G7': { notes: ['G', 'B', 'D', 'F'], intervals: [0, 4, 7, 10] },
         'Am7': { notes: ['A', 'C', 'E', 'G'], intervals: [0, 3, 7, 10] },
         'Bm7b5': { notes: ['B', 'D', 'F', 'A'], intervals: [0, 3, 6, 10] }
+    },
+    iv: {
+        'C': { notes: ['F', 'Ab', 'C'], intervals: [0, 3, 7] },
+        'C#': { notes: ['F#', 'A', 'C#'], intervals: [0, 3, 7] },
+        'D': { notes: ['G', 'Bb', 'D'], intervals: [0, 3, 7] },
+        'Eb': { notes: ['Ab', 'Cb', 'Eb'], intervals: [0, 3, 7] },
+        'E': { notes: ['A', 'C', 'E'], intervals: [0, 3, 7] },
+        'F': { notes: ['Bb', 'Db', 'F'], intervals: [0, 3, 7] },
+        'F#': { notes: ['B', 'D', 'F#'], intervals: [0, 3, 7] },
+        'G': { notes: ['C', 'Eb', 'G'], intervals: [0, 3, 7] },
+        'Ab': { notes: ['Db', 'Fb', 'Ab'], intervals: [0, 3, 7] },
+        'A': { notes: ['D', 'F', 'A'], intervals: [0, 3, 7] },
+        'Bb': { notes: ['Eb', 'Gb', 'Bb'], intervals: [0, 3, 7] },
+        'B': { notes: ['E', 'G', 'B'], intervals: [0, 3, 7] }
+    },
+    v: {
+        'C': { notes: ['G', 'B', 'D'], intervals: [0, 4, 7] },
+        'C#': { notes: ['G#', 'B#', 'D#'], intervals: [0, 4, 7] },
+        'D': { notes: ['A', 'C#', 'E'], intervals: [0, 4, 7] },
+        'Eb': { notes: ['Bb', 'D', 'F'], intervals: [0, 4, 7] },
+        'E': { notes: ['B', 'D#', 'F#'], intervals: [0, 4, 7] },
+        'F': { notes: ['C', 'E', 'G'], intervals: [0, 4, 7] },
+        'F#': { notes: ['C#', 'E#', 'G#'], intervals: [0, 4, 7] },
+        'G': { notes: ['D', 'F#', 'A'], intervals: [0, 4, 7] },
+        'Ab': { notes: ['Eb', 'G', 'Bb'], intervals: [0, 4, 7] },
+        'A': { notes: ['E', 'G#', 'B'], intervals: [0, 4, 7] },
+        'Bb': { notes: ['F', 'A', 'C'], intervals: [0, 4, 7] },
+        'B': { notes: ['F#', 'A#', 'C#'], intervals: [0, 4, 7] }
     }
 };
 
@@ -103,6 +131,8 @@ function generateChord() {
     const selectedDiminished = document.querySelector('[data-chord="diminished"].selected');
     const selectedAugmented = document.querySelector('[data-chord="augmented"].selected');
     const selectedSeventh = document.querySelector('[data-chord="seventh"].selected');
+    const selectedIV = document.querySelector('[data-chord="iv"].selected');
+    const selectedV = document.querySelector('[data-chord="v"].selected');
 
     // Add chords based on selections
     if (selectedMajor) {
@@ -156,6 +186,28 @@ function generateChord() {
                 type: '7th',
                 category: 'seventh',
                 ...chordDefinitions.seventh[key]
+            });
+        });
+    }
+
+    if (selectedIV) {
+        Object.keys(chordDefinitions.iv).forEach(key => {
+            availableChords.push({
+                key: key + ' (IV)',
+                type: 'IV',
+                category: 'iv',
+                ...chordDefinitions.iv[key]
+            });
+        });
+    }
+
+    if (selectedV) {
+        Object.keys(chordDefinitions.v).forEach(key => {
+            availableChords.push({
+                key: key + ' (V)',
+                type: 'V',
+                category: 'v',
+                ...chordDefinitions.v[key]
             });
         });
     }

@@ -367,6 +367,12 @@ h1, h2, h3 {
     margin-top: 10px;
 }
 
+.chord-types-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
 .setting-option {
     padding: 12px 20px;
     border: 2px solid var(--border);
@@ -602,6 +608,11 @@ h1, h2, h3 {
     .icon-button svg {
         width: 20px;
         height: 20px;
+    }
+
+    .chord-types-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
     }
 }
 
