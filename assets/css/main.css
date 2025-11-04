@@ -425,6 +425,7 @@ h1, h2, h3 {
 /* Inversion Buttons */
 .inversion-buttons {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 12px;
 }

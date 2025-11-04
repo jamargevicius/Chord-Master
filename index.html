@@ -117,7 +117,7 @@
                         </svg>
                         <span>Chord Types</span>
                     </div>
-                    <div class="setting-options chord-types-grid">
+                    <div class="setting-options">
                         <div class="setting-option selected" data-chord="major" onclick="toggleChordType(this)">
                             Major Triads
                         </div>
@@ -132,12 +132,6 @@
                         </div>
                         <div class="setting-option" data-chord="seventh" onclick="toggleChordType(this)">
                             7th Chords
-                        </div>
-                        <div class="setting-option" data-chord="iv" onclick="toggleChordType(this)">
-                            IV
-                        </div>
-                        <div class="setting-option" data-chord="v" onclick="toggleChordType(this)">
-                            V
                         </div>
                     </div>
                 </div>
@@ -154,6 +148,8 @@
                         <button class="setting-option inversion-option rounded-button selected" data-inversion="root" onclick="toggleInversion(this)">Root</button>
                         <button class="setting-option inversion-option rounded-button selected" data-inversion="first" onclick="toggleInversion(this)">1st Inv</button>
                         <button class="setting-option inversion-option rounded-button selected" data-inversion="second" onclick="toggleInversion(this)">2nd Inv</button>
+                        <button class="setting-option inversion-option rounded-button" data-inversion="iv" onclick="toggleInversion(this)">IV</button>
+                        <button class="setting-option inversion-option rounded-button" data-inversion="v" onclick="toggleInversion(this)">V</button>
                     </div>
                 </div>
             </div>

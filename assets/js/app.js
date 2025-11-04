@@ -131,8 +131,6 @@ function generateChord() {
     const selectedDiminished = document.querySelector('[data-chord="diminished"].selected');
     const selectedAugmented = document.querySelector('[data-chord="augmented"].selected');
     const selectedSeventh = document.querySelector('[data-chord="seventh"].selected');
-    const selectedIV = document.querySelector('[data-chord="iv"].selected');
-    const selectedV = document.querySelector('[data-chord="v"].selected');
 
     // Add chords based on selections
     if (selectedMajor) {
@@ -190,28 +188,6 @@ function generateChord() {
         });
     }
 
-    if (selectedIV) {
-        Object.keys(chordDefinitions.iv).forEach(key => {
-            availableChords.push({
-                key: key + ' (IV)',
-                type: 'IV',
-                category: 'iv',
-                ...chordDefinitions.iv[key]
-            });
-        });
-    }
-
-    if (selectedV) {
-        Object.keys(chordDefinitions.v).forEach(key => {
-            availableChords.push({
-                key: key + ' (V)',
-                type: 'V',
-                category: 'v',
-                ...chordDefinitions.v[key]
-            });
-        });
-    }
-
     // Default to major chords if nothing selected
     if (availableChords.length === 0) {
         Object.keys(chordDefinitions.major).forEach(key => {
@@ -247,30 +223,52 @@ function generateChord() {
 
     // Only apply inversions to triads (not 7th chords)
     if (selectedChord.category !== 'seventh' && selectedInversions.length > 0) {
-        // Build array of available inversions based on user selection
+        // Build array of available inversions/positions based on user selection
         const availableInversions = [];
         if (selectedInversions.includes('root')) {
-            availableInversions.push('Root Position');
+            availableInversions.push({ type: 'Root Position', category: selectedChord.category });
         }
         if (selectedInversions.includes('first')) {
-            availableInversions.push('1st Inversion');
+            availableInversions.push({ type: '1st Inversion', category: selectedChord.category });
         }
         if (selectedInversions.includes('second')) {
-            availableInversions.push('2nd Inversion');
+            availableInversions.push({ type: '2nd Inversion', category: selectedChord.category });
+        }
+        if (selectedInversions.includes('iv')) {
+            availableInversions.push({ type: 'IV', category: 'iv' });
+        }
+        if (selectedInversions.includes('v')) {
+            availableInversions.push({ type: 'V', category: 'v' });
         }
 
-        // Randomly pick from available inversions (equal probability)
+        // Randomly pick from available inversions/positions (equal probability)
         if (availableInversions.length > 0) {
-            inversionType = availableInversions[Math.floor(Math.random() * availableInversions.length)];
-        }
+            const selectedOption = availableInversions[Math.floor(Math.random() * availableInversions.length)];
+            inversionType = selectedOption.type;
 
-        // Apply the inversion transformation
-        if (inversionType === '1st Inversion') {
-            finalNotes = inversions['1st Inv'](selectedChord.notes);
-        } else if (inversionType === '2nd Inversion') {
-            finalNotes = inversions['2nd Inv'](selectedChord.notes);
+            // If IV or V is selected, override the chord with the IV or V chord
+            if (selectedOption.category === 'iv') {
+                const rootKey = selectedChord.key.replace(/m|dim|aug/g, ''); // Extract root key
+                if (chordDefinitions.iv[rootKey]) {
+                    finalNotes = chordDefinitions.iv[rootKey].notes;
+                    inversionType = 'IV';
+                }
+            } else if (selectedOption.category === 'v') {
+                const rootKey = selectedChord.key.replace(/m|dim|aug/g, ''); // Extract root key
+                if (chordDefinitions.v[rootKey]) {
+                    finalNotes = chordDefinitions.v[rootKey].notes;
+                    inversionType = 'V';
+                }
+            } else {
+                // Apply the inversion transformation for regular inversions
+                if (inversionType === '1st Inversion') {
+                    finalNotes = inversions['1st Inv'](selectedChord.notes);
+                } else if (inversionType === '2nd Inversion') {
+                    finalNotes = inversions['2nd Inv'](selectedChord.notes);
+                }
+                // Root Position uses the original notes (no transformation needed)
+            }
         }
-        // Root Position uses the original notes (no transformation needed)
     }
 
     // Store the chord key to prevent repeats
