@@ -80,7 +80,6 @@ const chordDefinitions = {
         'F7': { notes: ['F', 'A', 'C', 'Eb'], intervals: [0, 4, 7, 10] },
         'F#7': { notes: ['F#', 'A#', 'C#', 'E'], intervals: [0, 4, 7, 10] },
         'G7': { notes: ['G', 'B', 'D', 'F'], intervals: [0, 4, 7, 10] },
-        'G#7': { notes: ['G#', 'B#', 'D#', 'F#'], intervals: [0, 4, 7, 10] },
         'Ab7': { notes: ['Ab', 'C', 'Eb', 'Gb'], intervals: [0, 4, 7, 10] },
         'A7': { notes: ['A', 'C#', 'E', 'G'], intervals: [0, 4, 7, 10] },
         'Bb7': { notes: ['Bb', 'D', 'F', 'Ab'], intervals: [0, 4, 7, 10] },
