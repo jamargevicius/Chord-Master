@@ -72,13 +72,19 @@ const chordDefinitions = {
         'B': { notes: ['B', 'D#', 'F##'], intervals: [0, 4, 8] }
     },
     seventh: {
-        'Cmaj7': { notes: ['C', 'E', 'G', 'B'], intervals: [0, 4, 7, 11] },
-        'Dm7': { notes: ['D', 'F', 'A', 'C'], intervals: [0, 3, 7, 10] },
-        'Em7': { notes: ['E', 'G', 'B', 'D'], intervals: [0, 3, 7, 10] },
-        'Fmaj7': { notes: ['F', 'A', 'C', 'E'], intervals: [0, 4, 7, 11] },
+        'C7': { notes: ['C', 'E', 'G', 'Bb'], intervals: [0, 4, 7, 10] },
+        'C#7': { notes: ['C#', 'E#', 'G#', 'B'], intervals: [0, 4, 7, 10] },
+        'D7': { notes: ['D', 'F#', 'A', 'C'], intervals: [0, 4, 7, 10] },
+        'Eb7': { notes: ['Eb', 'G', 'Bb', 'Db'], intervals: [0, 4, 7, 10] },
+        'E7': { notes: ['E', 'G#', 'B', 'D'], intervals: [0, 4, 7, 10] },
+        'F7': { notes: ['F', 'A', 'C', 'Eb'], intervals: [0, 4, 7, 10] },
+        'F#7': { notes: ['F#', 'A#', 'C#', 'E'], intervals: [0, 4, 7, 10] },
         'G7': { notes: ['G', 'B', 'D', 'F'], intervals: [0, 4, 7, 10] },
-        'Am7': { notes: ['A', 'C', 'E', 'G'], intervals: [0, 3, 7, 10] },
-        'Bm7b5': { notes: ['B', 'D', 'F', 'A'], intervals: [0, 3, 6, 10] }
+        'G#7': { notes: ['G#', 'B#', 'D#', 'F#'], intervals: [0, 4, 7, 10] },
+        'Ab7': { notes: ['Ab', 'C', 'Eb', 'Gb'], intervals: [0, 4, 7, 10] },
+        'A7': { notes: ['A', 'C#', 'E', 'G'], intervals: [0, 4, 7, 10] },
+        'Bb7': { notes: ['Bb', 'D', 'F', 'Ab'], intervals: [0, 4, 7, 10] },
+        'B7': { notes: ['B', 'D#', 'F#', 'A'], intervals: [0, 4, 7, 10] }
     },
     iv: {
         'C': { notes: ['F', 'Ab', 'C'], intervals: [0, 3, 7] },
