@@ -73,7 +73,6 @@ const chordDefinitions = {
     },
     seventh: {
         'C7': { notes: ['C', 'E', 'G', 'Bb'], intervals: [0, 4, 7, 10] },
-        'C#7': { notes: ['C#', 'E#', 'G#', 'B'], intervals: [0, 4, 7, 10] },
         'D7': { notes: ['D', 'F#', 'A', 'C'], intervals: [0, 4, 7, 10] },
         'Eb7': { notes: ['Eb', 'G', 'Bb', 'Db'], intervals: [0, 4, 7, 10] },
         'E7': { notes: ['E', 'G#', 'B', 'D'], intervals: [0, 4, 7, 10] },
